@@ -34,5 +34,18 @@ namespace BussinessLayer.IFundooBussiness
         /// <param name="userid"></param>
         /// <returns></returns>
         public string CreateToken(string userEmail, int userid);
+        /// <summary>
+        /// Forger password
+        /// </summary>
+        /// <param name="UserEmail"></param>
+        /// <returns></returns>
+        public bool ForgotPassword(string UserEmail);
+
+        /// <summary>
+        /// Reset Password Method
+        /// </summary>
+        /// <param name="resetPassword">Reset Password</param>
+        /// <returns>boolean result</returns>
+        public bool ResetPassword(ResetPassword resetPassword);
     }
 }

@@ -80,6 +80,41 @@ namespace BussinessLayer.Service
                 throw;
             }
         }
+        //---------------------------------FORGET PASSWORD-------------------------------------------------//
+        /// <summary>
+        ///  Method for  Forget password.
+        /// </summary>
+        /// <param name="userEmail"></param>
+        /// <returns></returns>
+        public bool ForgotPassword(string UserEmail)
+        {
+            try
+            {
+
+                return this.fundoo.ForgotPassword(UserEmail);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        //---------------------------------RESET PASSWORD-------------------------------------------------//
+        /// <summary>
+        /// Method for reset password
+        /// </summary>
+        /// <param name="resetPassword"></param>
+        /// <returns></returns>
+        public bool ResetPassword(ResetPassword resetPassword)
+        {
+            try
+            {
+                return this.fundoo.ResetPassword(resetPassword);
+            }
+            catch
+            {
+                throw;
+            }
+        }
         //-----------------------------------CREATE TOKEN-----------------------------------------------//
         /// <summary>
         /// Token Crreated
