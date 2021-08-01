@@ -1,4 +1,5 @@
 ﻿using BussinessLayer.IFundooBussiness;
+using CommanLayer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -28,6 +29,26 @@ namespace FundooNotes.Controllers
             {
                 var fundoos = Fundoo.GetFundoo();
                 return this.Ok(new { Success = true, Message = "Get User SuccessFull", Data = fundoos });
+            }
+            catch (Exception ex)
+            {
+
+                return this.BadRequest(new { Success = false, Message = ex.Message, StackTrace = ex.StackTrace });
+            }
+        }
+        /// <summary>
+        /// Register User
+        /// </summary>
+        /// <param name="adduser"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("registration")]
+        public ActionResult AddUser(UserAccountDetails adduser)
+        {
+            try
+            {
+                Fundoo.AddUser(adduser);
+                return Created(adduser.Userid.ToString(), adduser);
             }
             catch (Exception ex)
             {

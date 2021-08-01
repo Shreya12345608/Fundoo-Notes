@@ -12,5 +12,12 @@ namespace BussinessLayer.IFundooBussiness
         /// </summary>
         /// <returns></returns>
         public List<UserAccountDetails> GetFundoo();
+
+        /// <summary>
+        ///add new user
+        /// </summary>
+        /// <param name="adduser"></param>
+        /// <returns></returns>
+        public UserAccountDetails AddUser(UserAccountDetails addUser);
     }
 }

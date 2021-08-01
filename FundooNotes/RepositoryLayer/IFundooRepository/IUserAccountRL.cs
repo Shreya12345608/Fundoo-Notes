@@ -12,5 +12,12 @@ namespace RepositoryLayer.IRepository
         /// </summary>
         /// <returns></returns>
         public List<UserAccountDetails> GetFundoo();
+
+        /// <summary>
+        /// Add New User
+        /// </summary>
+        /// <param name="adduser"></param>
+        ///<returns></returns>
+        UserAccountDetails AddUser(UserAccountDetails addUser);
     }
 }

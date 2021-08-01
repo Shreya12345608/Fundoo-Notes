@@ -16,6 +16,26 @@ namespace BussinessLayer.Service
         {
             this.fundoo = fundoo;
         }
+
+        //-------------------------ADD USER------------------------------------------//
+        /// <summary>
+        /// Add user
+        /// </summary>
+        /// <param name="adduser"></param>
+        /// <returns></returns>
+        public UserAccountDetails AddUser(UserAccountDetails addUser)
+        {
+            try
+            {
+                fundoo.AddUser(addUser);
+                return addUser;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         //---------------------------------GET DETAILS-------------------------------------------------//
 
         /// <summary>

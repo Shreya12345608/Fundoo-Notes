@@ -14,5 +14,6 @@ namespace RepositoryLayer
         }
         //table name
         public DbSet<UserAccountDetails> FondooNotes { get; set; }
+        
     }
 }
