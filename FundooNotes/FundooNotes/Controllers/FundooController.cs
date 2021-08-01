@@ -71,10 +71,11 @@ namespace FundooNotes.Controllers
                 var users = Fundoo.LoginAccount(loginModel.UserEmail, loginModel.Password);
                 if (users != null)
                 {
-                    return Ok(new { sucess = true, message = "Valid details", Data = users });
+                    string Token = Fundoo.CreateToken(users.UserEmail, users.Userid);
+                    return Ok(new { sucess = true, message = "User Logged in Successfull", Data = users, Token });
 
                 }
-                return NotFound(new { sucess = false, message = "Invalid details" });
+                return NotFound(new { sucess = false, message = "Invalid details- Login Fail" });
             }
             catch (Exception ex)
             {

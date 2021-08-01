@@ -5,6 +5,10 @@ using System.Text;
 using RepositoryLayer.IRepository;
 using CommanLayer;
 using BussinessLayer.IFundooBussiness;
+using Microsoft.Extensions.Configuration;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 
 namespace BussinessLayer.Service
 {
@@ -12,8 +16,11 @@ namespace BussinessLayer.Service
     {
         //instance variable
         private IUserAccountRL fundoo;
-        public UserAccountBL(IUserAccountRL fundoo)
+        private string Secret;
+        //constructor for class FundooBL 
+        public UserAccountBL(IUserAccountRL fundoo, IConfiguration configuration)
         {
+            Secret = configuration.GetSection("AppSettings").GetSection("Secret").Value;
             this.fundoo = fundoo;
         }
 
@@ -53,7 +60,13 @@ namespace BussinessLayer.Service
                 throw;
             }
         }
-
+        //----------------------------LOGIN ACCOUNT---------------------------------------------//
+        /// <summary>
+        ///  Method for  Login Account 
+        /// </summary>
+        /// <param name="userEmail"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
         public UserAccountDetails LoginAccount(string userEmail, string password)
         {
             try
@@ -67,6 +80,32 @@ namespace BussinessLayer.Service
                 throw;
             }
         }
+        //-----------------------------------CREATE TOKEN-----------------------------------------------//
+        /// <summary>
+        /// Token Crreated
+        /// </summary>
+        /// <param name="userEmail"></param>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        public string CreateToken(string userEmail, int userid)
+        {
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(Secret);
+            var tokenDescpritor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[] {
+                        new Claim(ClaimTypes.Email, userEmail),
+                        new Claim("userid", userid.ToString(), ClaimValueTypes.Integer),
+                    }),
+                Expires = DateTime.UtcNow.AddMinutes(30),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescpritor);
+            string jwtToken = tokenHandler.WriteToken(token);
+            return jwtToken;
+        }
+
     }
 
 }

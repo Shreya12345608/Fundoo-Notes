@@ -27,6 +27,12 @@ namespace BussinessLayer.IFundooBussiness
         /// <param name="password"></param>
         /// <returns></returns>
         public UserAccountDetails LoginAccount(string userEmail, string password);
-
+        /// <summary>
+        /// Create token
+        /// </summary>
+        /// <param name="userEmail"></param>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        public string CreateToken(string userEmail, int userid);
     }
 }

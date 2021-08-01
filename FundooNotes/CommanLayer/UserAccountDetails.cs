@@ -29,5 +29,8 @@ namespace CommanLayer
        //For PAssword
         public string Password { get; set; }
     }
-
+    public class Settings
+    {
+        public string Secret { get; set; }
+    }
 }
