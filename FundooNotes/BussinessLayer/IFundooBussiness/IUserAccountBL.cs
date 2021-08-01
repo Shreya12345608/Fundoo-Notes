@@ -1,10 +1,16 @@
-﻿using System;
+﻿using CommanLayer;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace BussinessLayer.IBussiness
+namespace BussinessLayer.IFundooBussiness
 {
-    class IUserAccountBL
+    public interface IUserAccountBL
     {
+        /// <summary>
+        /// list all the user
+        /// </summary>
+        /// <returns></returns>
+        public List<UserAccountDetails> GetFundoo();
     }
 }
