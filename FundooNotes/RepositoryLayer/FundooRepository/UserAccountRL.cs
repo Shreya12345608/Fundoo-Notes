@@ -56,5 +56,21 @@ namespace RepositoryLayer.FundooRepository
                 throw;
             }
         }
+
+        public UserAccountDetails UserLogin(string userEmail, string password)
+        {
+            try
+            {
+                //string pass = EncryptPassword(password);
+                UserAccountDetails userValidation = fundooContext.FondooNotes.FirstOrDefault(user => user.UserEmail == userEmail && user.Password == password);
+                //UserAccountDetails userAccountDetails = new UserAccountDetails();
+                //userAccountDetails.Password = pass;
+                return userValidation;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

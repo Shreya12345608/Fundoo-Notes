@@ -56,5 +56,31 @@ namespace FundooNotes.Controllers
                 return this.BadRequest(new { Success = false, Message = ex.Message, StackTrace = ex.StackTrace });
             }
         }
+        /// <summary>
+        ///Controller method for Logins the instance.
+        /// </summary>
+        /// <param name="loginModel"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("Login")]
+        public ActionResult UserLogin(LoginModel loginModel)
+        {
+            try
+            {
+
+                var users = Fundoo.LoginAccount(loginModel.UserEmail, loginModel.Password);
+                if (users != null)
+                {
+                    return Ok(new { sucess = true, message = "Valid details", Data = users });
+
+                }
+                return NotFound(new { sucess = false, message = "Invalid details" });
+            }
+            catch (Exception ex)
+            {
+
+                return this.BadRequest(new { Success = false, Message = ex.Message, StackTrace = ex.StackTrace });
+            }
+        }
     }
 }

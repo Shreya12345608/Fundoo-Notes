@@ -53,6 +53,20 @@ namespace BussinessLayer.Service
                 throw;
             }
         }
+
+        public UserAccountDetails LoginAccount(string userEmail, string password)
+        {
+            try
+            {
+
+                return this.fundoo.UserLogin(userEmail, password);
+
+            }
+            catch
+            {
+                throw;
+            }
+        }
     }
 
 }
