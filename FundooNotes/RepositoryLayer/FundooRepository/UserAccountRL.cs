@@ -33,14 +33,13 @@ namespace RepositoryLayer.FundooRepository
         {
             try
             {
-
                 fundooContext.FondooNotes.Add(addUser);
                 int row = fundooContext.SaveChanges();
                 return row == 1 ? addUser : null;
             }
-            catch (Exception ex)
+            catch
             {
-                throw new Exception(ex.Message);
+                throw;
             }
         }
 
@@ -103,7 +102,7 @@ namespace RepositoryLayer.FundooRepository
                         Smtp.Host = "smtp.gmail.com";
                         Smtp.EnableSsl = true;
                         Smtp.UseDefaultCredentials = false;
-                        Smtp.Credentials = new NetworkCredential("malviyashreya26@gmail.com", "000000@12355555");
+                        Smtp.Credentials = new NetworkCredential("malviyashreya26@gmail.com", "Shreya@123");
                         Smtp.Port = 587;
                         Smtp.Send(mailMessage);
                     }
@@ -115,9 +114,9 @@ namespace RepositoryLayer.FundooRepository
                 result = false;
                 return result;
             }
-            catch (Exception ex)
+            catch
             {
-                throw new Exception(ex.Message);
+                throw;
             }
         }
         /// <summary>

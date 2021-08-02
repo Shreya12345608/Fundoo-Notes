@@ -2,6 +2,7 @@
 using CommanLayer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,7 +53,24 @@ namespace FundooNotes.Controllers
             }
             catch (Exception ex)
             {
-
+                if (ex.GetBaseException().GetType() == typeof(SqlException))
+                {
+                    Int32 ErrorCode = ((SqlException)ex.InnerException).Number;
+                    switch (ErrorCode)
+                    {
+                        case 2627:  // Unique constraint error
+                            return this.BadRequest(new { Success = false, Message = " Unique constraint error", StackTrace = ex.StackTrace });
+                            break;
+                        case 547:   // Constraint check violation
+                            return this.BadRequest(new { Success = false, Message = " Constraint check violation", StackTrace = ex.StackTrace });
+                            break;
+                        case 2601:  // Duplicated key row error
+                            return this.BadRequest(new { Success = false, Message = " Duplicated Email ID. Please enter Unique Email ID", StackTrace = ex.StackTrace });
+                            break;
+                        default:
+                            break;
+                    }
+                }
                 return this.BadRequest(new { Success = false, Message = ex.Message, StackTrace = ex.StackTrace });
             }
         }
