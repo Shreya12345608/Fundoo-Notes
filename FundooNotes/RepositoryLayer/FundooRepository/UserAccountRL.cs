@@ -1,11 +1,11 @@
 ﻿using CommanLayer;
 using RepositoryLayer.IRepository;
-using RepositoryLayer.MSMQService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace RepositoryLayer.FundooRepository
@@ -58,13 +58,29 @@ namespace RepositoryLayer.FundooRepository
                 throw;
             }
         }
-
+        /// <summary>
+        /// get user by email
+        /// </summary>
+        /// <param name="UserEmail"></param>
+        /// <returns></returns>
+        public UserAccountDetails GetUser(string UserEmail)
+        {
+            try
+            {
+                var user = this.fundooContext.FondooNotes.SingleOrDefault(x => x.UserEmail == UserEmail);
+                return user;
+            }
+            catch
+            {
+                throw;
+            }
+        }
         public UserAccountDetails UserLogin(string userEmail, string password)
         {
             try
             {
 
-                //string pass = EncryptPassword(password);
+                string pass = EncryptPassword(password);
                 UserAccountDetails userValidation = fundooContext.FondooNotes.FirstOrDefault(user => user.UserEmail == userEmail && user.Password == password);
                 //userAccountDetails.Password = pass;
                 return userValidation;
@@ -79,40 +95,12 @@ namespace RepositoryLayer.FundooRepository
         /// </summary>
         /// <param name="UserEmail"></param>
         /// <returns></returns>
-        public bool ForgotPassword(string UserEmail)
+        public UserAccountDetails ForgotPassword(string UserEmail)
         {
             try
             {
-                bool result;
-                string user;
-                string mailSubject = "Link to reset your FundooNotes App Credentials";
-                var userCheck = this.fundooContext.FondooNotes.SingleOrDefault(x => x.UserEmail == UserEmail);
-                if (userCheck != null)
-                {
-                    msmqUtility msmq = new msmqUtility();
-                    msmq.SendMessage();
-                    var messageBody = msmq.receiverMessage();
-                    user = messageBody;
-                    using (MailMessage mailMessage = new MailMessage("malviyashreya26@gmail.com", UserEmail))
-                    {
-                        mailMessage.Subject = mailSubject;
-                        mailMessage.Body = user;
-                        mailMessage.IsBodyHtml = true;
-                        SmtpClient Smtp = new SmtpClient();
-                        Smtp.Host = "smtp.gmail.com";
-                        Smtp.EnableSsl = true;
-                        Smtp.UseDefaultCredentials = false;
-                        Smtp.Credentials = new NetworkCredential("malviyashreya26@gmail.com", "Shreya@123");
-                        Smtp.Port = 587;
-                        Smtp.Send(mailMessage);
-                    }
-
-                    result = true;
-                    return result;
-                }
-
-                result = false;
-                return result;
+                var user = this.fundooContext.FondooNotes.SingleOrDefault(x => x.UserEmail == UserEmail);
+                return user;
             }
             catch
             {
@@ -124,40 +112,43 @@ namespace RepositoryLayer.FundooRepository
         /// </summary>
         /// <param name="Password"></param>
         /// <returns></returns>
-        //private static string EncryptPassword(string Password)
-        //{
-        //    try
-        //    {
+        private static string EncryptPassword(string Password)
+        {
+            try
+            {
 
-        //        //SHA1 hash value for the input data using the
-        //        //implementation provided by the cryptographic service provider (CSP)
-        //        var provider = new SHA1CryptoServiceProvider();
-        //        //Represents a UTF-16 encoding of Unicode characters.
-        //        var encoding = new UnicodeEncoding();
-        //        //encrypt the given password string into Encrypted data  
-        //        byte[] encrypt = provider.ComputeHash(encoding.GetBytes(Password));
-        //        String encrypted = Convert.ToBase64String(encrypt);
-        //        return encrypted;
-        //    }
-        //    catch
-        //    {
+                //SHA1 hash value for the input data using the
+                //implementation provided by the cryptographic service provider (CSP)
+                var provider = new SHA1CryptoServiceProvider();
+                //Represents a UTF-16 encoding of Unicode characters.
+                var encoding = new UnicodeEncoding();
+                //encrypt the given password string into Encrypted data  
+                byte[] encrypt = provider.ComputeHash(encoding.GetBytes(Password));
+                String encrypted = Convert.ToBase64String(encrypt);
+                return encrypted;
+            }
+            catch
+            {
 
-        //        throw;
-        //    }
-        //}
+                throw;
+            }
+        }
         /// <summary>
         /// reset password
         /// </summary>
         /// <param name="resetPassword"></param>
         /// <returns></returns>
-        public bool ResetPassword(ResetPassword resetPassword)
+        public bool ResetPassword(ResetPassword reset, int userId)
         {
-            var user = this.fundooContext.FondooNotes.FirstOrDefault(user => user.UserEmail == resetPassword.UserEmail);
-            if (user != null)
+            if (reset.NewPassword == reset.ConfirmPassword)
             {
-                user.Password = resetPassword.NewPassword;
-                int row = fundooContext.SaveChanges();
-                return row == 1 ? true : false;
+                var user = this.fundooContext.FondooNotes.FirstOrDefault(user => user.Userid == userId);
+                if (user != null)
+                {
+                    user.Password = reset.NewPassword;
+                    int row = fundooContext.SaveChanges();
+                    return row == 1 ? true : false;
+                }
             }
             return false;
         }

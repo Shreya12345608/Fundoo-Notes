@@ -9,6 +9,9 @@ using Microsoft.Extensions.Configuration;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
+using System.Net.Mail;
+using RepositoryLayer.FundooRepository.MSMQUtility;
+using System.Net;
 
 namespace BussinessLayer.Service
 {
@@ -60,6 +63,8 @@ namespace BussinessLayer.Service
                 throw;
             }
         }
+            
+
         //----------------------------LOGIN ACCOUNT---------------------------------------------//
         /// <summary>
         ///  Method for  Login Account 
@@ -88,10 +93,50 @@ namespace BussinessLayer.Service
         /// <returns></returns>
         public bool ForgotPassword(string UserEmail)
         {
+            //try
+            //{
+
+            //    return this.fundoo.ForgotPassword(UserEmail);
+            //}
+            //catch
+            //{
+            //    throw;
+            //}
             try
             {
+                bool result;
+                string user;
+                string mailSubject = "Link to reset your FundooNotes App Credentials";
+                //var userCheck = this.fundooContext.FondooNotes.SingleOrDefault(x => x.UserEmail == UserEmail);
+                var existingUser = fundoo.GetUser(UserEmail); 
+                if (existingUser != null)
+                {
+                    string token = CreateToken(existingUser.UserEmail, existingUser.Userid);
+                    msmqUtility msmq = new msmqUtility();
 
-                return this.fundoo.ForgotPassword(UserEmail);
+                    msmq.SendMessage(UserEmail, token);
+                    var messageBody = msmq.receiverMessage();
+                    user = messageBody;
+                    using (MailMessage mailMessage = new MailMessage("malviyashreya26@gmail.com", UserEmail))
+                    {
+                        mailMessage.Subject = mailSubject;
+                        mailMessage.Body = user;
+                        mailMessage.IsBodyHtml = true;
+                        SmtpClient Smtp = new SmtpClient();
+                        Smtp.Host = "smtp.gmail.com";
+                        Smtp.EnableSsl = true;
+                        Smtp.UseDefaultCredentials = false;
+                        Smtp.Credentials = new NetworkCredential("malviyashreya26@gmail.com", "Shreya@123");
+                        Smtp.Port = 587;
+                        Smtp.Send(mailMessage);
+                    }
+
+                    result = true;
+                    return result;
+                }
+
+                result = false;
+                return result;
             }
             catch
             {
@@ -104,11 +149,11 @@ namespace BussinessLayer.Service
         /// </summary>
         /// <param name="resetPassword"></param>
         /// <returns></returns>
-        public bool ResetPassword(ResetPassword resetPassword)
+        public bool ResetPassword(ResetPassword reset, int userId)
         {
             try
             {
-                return this.fundoo.ResetPassword(resetPassword);
+                return fundoo.ResetPassword(reset,userId);
             }
             catch
             {
@@ -141,6 +186,7 @@ namespace BussinessLayer.Service
             return jwtToken;
         }
 
+        
     }
 
 }

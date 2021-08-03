@@ -31,13 +31,14 @@ namespace RepositoryLayer.IRepository
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        bool ForgotPassword(string UserEmail);
+        UserAccountDetails ForgotPassword(string UserEmail);
         /// <summary>
         /// Reset Password Method
         /// </summary>
         /// <param name="resetPassword">Reset Password</param>
         /// <returns>boolean result</returns>
 
-        public bool ResetPassword(ResetPassword resetPassword);
+        public bool ResetPassword(ResetPassword reset, int userId);
+        public UserAccountDetails GetUser(string UserEmail);
     }
 }

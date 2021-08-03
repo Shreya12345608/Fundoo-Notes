@@ -1,14 +1,18 @@
 ﻿using BussinessLayer.IFundooBussiness;
 using CommanLayer;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 namespace FundooNotes.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class FundooController : ControllerBase
@@ -42,6 +46,12 @@ namespace FundooNotes.Controllers
         /// </summary>
         /// <param name="adduser"></param>
         /// <returns></returns>
+        /// <summary>
+        /// Register User
+        /// </summary>
+        /// <param name="adduser"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
         [HttpPost]
         [Route("registration")]
         public ActionResult AddUser(UserAccountDetails adduser)
@@ -60,13 +70,12 @@ namespace FundooNotes.Controllers
                     {
                         case 2627:  // Unique constraint error
                             return this.BadRequest(new { Success = false, Message = " Unique constraint error", StackTrace = ex.StackTrace });
-                            break;
+
                         case 547:   // Constraint check violation
                             return this.BadRequest(new { Success = false, Message = " Constraint check violation", StackTrace = ex.StackTrace });
-                            break;
+
                         case 2601:  // Duplicated key row error
-                            return this.BadRequest(new { Success = false, Message = " Duplicated Email ID. Please enter Unique Email ID", StackTrace = ex.StackTrace });
-                            break;
+                            return this.BadRequest(new { Success = false, Message = " Duplicated Email ID. Please enter Unique Email IDow ", StackTrace = ex.StackTrace });
                         default:
                             break;
                     }
@@ -79,6 +88,7 @@ namespace FundooNotes.Controllers
         /// </summary>
         /// <param name="loginModel"></param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpPost]
         [Route("Login")]
         public ActionResult UserLogin(LoginModel loginModel)
@@ -106,6 +116,7 @@ namespace FundooNotes.Controllers
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpPost]
         [Route("forget-Password")]
         public ActionResult ForgotPassword(ForgetPasswordModel user)
@@ -133,12 +144,17 @@ namespace FundooNotes.Controllers
         /// <param name="resetPassword"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("reset-password")]
-        public ActionResult ResetPassword(ResetPassword resetPassword)
+        [Route("reset-password/{Token}")]
+        public ActionResult ResetPassword(string Token, ResetPassword resetPassword)
         {
+
             try
             {
-                bool resetPaswrd = Fundoo.ResetPassword(resetPassword);
+
+                ClaimsPrincipal principal = HttpContext.User as ClaimsPrincipal;
+                int userId = Convert.ToInt32(principal.Claims.SingleOrDefault(c=> c.Type== "userid").Value);
+               //int userId = 0;
+                bool resetPaswrd = Fundoo.ResetPassword(resetPassword, userId);
                 if (resetPaswrd)
                 {
                     return Ok(new { Success = true, message = "Password Reset Successfully" });

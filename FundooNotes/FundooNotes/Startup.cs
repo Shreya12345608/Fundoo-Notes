@@ -74,7 +74,11 @@ namespace FundooNotes
                     Name = "JWT Authentication",
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.Http,
+<<<<<<< HEAD
                     Description = "Put **_ONLY_** your JWT Bearer token on textbox below!",
+=======
+                    Description = "Put *ONLY* your JWT Bearer token on textbox below!",
+>>>>>>> UC5-ResetPassword
 
                     Reference = new OpenApiReference
                     {
