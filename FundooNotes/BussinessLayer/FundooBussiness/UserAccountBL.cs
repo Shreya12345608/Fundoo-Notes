@@ -126,7 +126,7 @@ namespace BussinessLayer.Service
                         Smtp.Host = "smtp.gmail.com";
                         Smtp.EnableSsl = true;
                         Smtp.UseDefaultCredentials = false;
-                        Smtp.Credentials = new NetworkCredential("malviyashreya26@gmail.com", "Shreya@123");
+                        Smtp.Credentials = new NetworkCredential("malviyashreya26@gmail.com", "ghbjija@3151&23");
                         Smtp.Port = 587;
                         Smtp.Send(mailMessage);
                     }
