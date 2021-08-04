@@ -10,11 +10,7 @@ using System.Threading.Tasks;
 
 namespace FundooNotes.Controllers
 {
-<<<<<<< HEAD
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-=======
 
->>>>>>> UC5-ResetPassword
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase

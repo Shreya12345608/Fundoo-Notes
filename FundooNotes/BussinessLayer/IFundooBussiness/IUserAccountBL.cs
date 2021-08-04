@@ -46,6 +46,6 @@ namespace BussinessLayer.IFundooBussiness
         /// </summary>
         /// <param name="resetPassword">Reset Password</param>
         /// <returns>boolean result</returns>
-        public bool ResetPassword(ResetPassword resetPassword);
+        public bool ResetPassword(ResetPassword reset, int userId);
     }
 }

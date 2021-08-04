@@ -21,19 +21,13 @@ namespace CommanLayer
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long NotesId { get; set; }
-        
-        /// <summary>
-        /// Get or set the user id
-        /// </summary>
-        [ForeignKey("UserAccountDetails")]
-        public string userid { get; set; }
+
         /// <summary>
         /// Gets or sets the user identifier.
         /// </summary>
         /// <value>
         /// The user identifier.
         /// </value>
-        [ForeignKey("UserAccountDetails")]
         public string Email { get; set; }
 
         /// <summary>
@@ -58,7 +52,7 @@ namespace CommanLayer
         /// <value>
         /// The created date.
         /// </value>
-        public DateTime? CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; }
 
         /// <summary>
         /// Gets or sets the modified date.
@@ -66,7 +60,7 @@ namespace CommanLayer
         /// <value>
         /// The modified date.
         /// </value>
-        public DateTime? ModifiedDate { get; set; }
+        public DateTime ModifiedDate { get; set; }
 
         /// <summary>
         /// Gets or sets the reminder.
@@ -116,6 +110,7 @@ namespace CommanLayer
         /// <value>
         /// The image.
         /// </value>
-        public string Image  {  get;set; }
+        public string Image { get; set; }
+        public UserAccountDetails UserAccount { get; set; }
     }
 }

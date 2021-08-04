@@ -18,9 +18,9 @@ namespace RepositoryLayer
         /// <param name="builder"></param>
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            //builder.Entity<UserAccountDetails>()
-            //    .HasIndex(u => u.UserEmail)
-            //    .IsUnique();
+            builder.Entity<UserAccountDetails>()
+                .HasIndex(u => u.UserEmail)
+                .IsUnique();
             builder.Entity<NotesModel>()
                .HasIndex(u => u.Email)
                .IsUnique();

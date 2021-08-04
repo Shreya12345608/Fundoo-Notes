@@ -9,10 +9,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading;
 using System.Threading.Tasks;
 namespace FundooNotes.Controllers
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+
     [Route("api/[controller]")]
     [ApiController]
     public class FundooController : ControllerBase
@@ -51,7 +52,7 @@ namespace FundooNotes.Controllers
         /// </summary>
         /// <param name="adduser"></param>
         /// <returns></returns>
-        [AllowAnonymous]
+       // [AllowAnonymous]
         [HttpPost]
         [Route("registration")]
         public ActionResult AddUser(UserAccountDetails adduser)
@@ -88,7 +89,7 @@ namespace FundooNotes.Controllers
         /// </summary>
         /// <param name="loginModel"></param>
         /// <returns></returns>
-        [AllowAnonymous]
+       // [AllowAnonymous]
         [HttpPost]
         [Route("Login")]
         public ActionResult UserLogin(LoginModel loginModel)
@@ -116,7 +117,7 @@ namespace FundooNotes.Controllers
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        [AllowAnonymous]
+        //[AllowAnonymous]
         [HttpPost]
         [Route("forget-Password")]
         public ActionResult ForgotPassword(ForgetPasswordModel user)
@@ -124,6 +125,8 @@ namespace FundooNotes.Controllers
             try
             {
                 bool forgetpass = Fundoo.ForgotPassword(user.UserEmail);
+
+                Task.Delay(5000);
                 if (forgetpass)
                 {
                     return Ok(new { Success = true, message = "Valid details" });
@@ -143,17 +146,18 @@ namespace FundooNotes.Controllers
         /// </summary>
         /// <param name="resetPassword"></param>
         /// <returns></returns>
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPut]
         [Route("reset-password/{Token}")]
-        public ActionResult ResetPassword(string Token, ResetPassword resetPassword)
+        public ActionResult ResetPassword([FromRoute] string Token, ResetPassword resetPassword)
         {
 
             try
             {
 
                 ClaimsPrincipal principal = HttpContext.User as ClaimsPrincipal;
-                int userId = Convert.ToInt32(principal.Claims.SingleOrDefault(c=> c.Type== "userid").Value);
-               //int userId = 0;
+                int userId = Convert.ToInt32(principal.Claims.SingleOrDefault(c => c.Type == "userid").Value);
+                //int userId = 0;
                 bool resetPaswrd = Fundoo.ResetPassword(resetPassword, userId);
                 if (resetPaswrd)
                 {

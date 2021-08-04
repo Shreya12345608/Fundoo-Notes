@@ -28,6 +28,7 @@ namespace CommanLayer
         public string UserEmail { get; set; }
        //For PAssword
         public string Password { get; set; }
+        public List<NotesModel> Notes { get; set; }
     }
     public class Settings
     {

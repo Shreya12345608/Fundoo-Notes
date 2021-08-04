@@ -93,15 +93,6 @@ namespace BussinessLayer.Service
         /// <returns></returns>
         public bool ForgotPassword(string UserEmail)
         {
-            //try
-            //{
-
-            //    return this.fundoo.ForgotPassword(UserEmail);
-            //}
-            //catch
-            //{
-            //    throw;
-            //}
             try
             {
                 bool result;
@@ -115,21 +106,21 @@ namespace BussinessLayer.Service
                     msmqUtility msmq = new msmqUtility();
 
                     msmq.SendMessage(UserEmail, token);
-                    var messageBody = msmq.receiverMessage();
-                    user = messageBody;
-                    using (MailMessage mailMessage = new MailMessage("malviyashreya26@gmail.com", UserEmail))
-                    {
-                        mailMessage.Subject = mailSubject;
-                        mailMessage.Body = user;
-                        mailMessage.IsBodyHtml = true;
-                        SmtpClient Smtp = new SmtpClient();
-                        Smtp.Host = "smtp.gmail.com";
-                        Smtp.EnableSsl = true;
-                        Smtp.UseDefaultCredentials = false;
-                        Smtp.Credentials = new NetworkCredential("malviyashreya26@gmail.com", "Shreya@123");
-                        Smtp.Port = 587;
-                        Smtp.Send(mailMessage);
-                    }
+                   // var messageBody = msmq.receiverMessage();
+                    //user = messageBody;
+                    //using (MailMessage mailMessage = new MailMessage("malviyashreya26@gmail.com", UserEmail))
+                    //{
+                    //    mailMessage.Subject = mailSubject;
+                    //    mailMessage.Body = user;
+                    //    mailMessage.IsBodyHtml = true;
+                    //    SmtpClient Smtp = new SmtpClient();
+                    //    Smtp.Host = "smtp.gmail.com";
+                    //    Smtp.EnableSsl = true;
+                    //    Smtp.UseDefaultCredentials = false;
+                    //    Smtp.Credentials = new NetworkCredential("malviyashreya26@gmail.com", "Shreya@123");
+                    //    Smtp.Port = 587;
+                    //    Smtp.Send(mailMessage);
+                    //}
 
                     result = true;
                     return result;
@@ -178,7 +169,7 @@ namespace BussinessLayer.Service
                         new Claim(ClaimTypes.Email, userEmail),
                         new Claim("userid", userid.ToString(), ClaimValueTypes.Integer),
                     }),
-                Expires = DateTime.UtcNow.AddMinutes(30),
+                Expires = DateTime.UtcNow.AddMinutes(120),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescpritor);
