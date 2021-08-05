@@ -102,7 +102,7 @@ namespace BussinessLayer.Service
                 if (existingUser != null)
                 {
                     string token = CreateToken(existingUser.UserEmail, existingUser.Userid);
-                    msmqUtility msmq = new msmqUtility();
+                    msmqUtility msmq = new msmqUtility(Secret);
 
                     msmq.SendMessage(UserEmail, token);
                    // var messageBody = msmq.receiverMessage();

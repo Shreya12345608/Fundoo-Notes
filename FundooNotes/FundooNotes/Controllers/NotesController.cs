@@ -65,5 +65,21 @@ namespace FundooNotes.Controllers
         {
             return Convert.ToInt32(User.FindFirst(x => x.Type == "userid").Value);
         }
+
+        [HttpGet]
+        public ActionResult GetAll()
+        {
+            try
+            {
+
+                var fundoos = fundooNoteBL.GetAll();
+                return this.Ok(new { Success = true, Message = "Get Note SuccessFull", Data = fundoos });
+            }
+            catch (Exception ex)
+            {
+
+                return this.BadRequest(new { Success = false,Message = ex.Message, StackTrace = ex.StackTrace});
+            }
+        }
     }
 }

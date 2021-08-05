@@ -31,6 +31,14 @@ namespace BussinessLayer.FundooBussiness
                 throw;
             }
         }
+        /// <summary>
+        /// List all the Notes From the DB
+        /// </summary>
+        /// <returns></returns>
+        public List<AddNote> GetAll()
+        {
+            return this.fundooNoteRL.GetAll();
+        }
     }
 
 }

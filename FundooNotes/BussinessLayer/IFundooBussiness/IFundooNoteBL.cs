@@ -16,7 +16,7 @@ namespace BussinessLayer.IFundooBussiness
         /// List all the Notes from the table
         /// </summary>
         /// <returns></returns>
-        public List<NotesModel> GetAll();
+        public List<AddNote> GetAll();
     
 
     }

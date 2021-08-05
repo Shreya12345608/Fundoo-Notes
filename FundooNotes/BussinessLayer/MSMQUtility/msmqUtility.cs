@@ -21,11 +21,17 @@ namespace RepositoryLayer.FundooRepository.MSMQUtility
         {
             Secret = configuration.GetSection("AppSettings").GetSection("Secret").Value;
         }
-        public msmqUtility()
-        {
 
+        public msmqUtility(string secret)
+        {
+            Secret = secret;
         }
-            MessageQueue msmqQueue = new MessageQueue();
+
+        //public msmqUtility()
+        //{
+
+        //}
+        MessageQueue msmqQueue = new MessageQueue();
              private string mailSubject;
 
         /// <summary>
@@ -74,8 +80,13 @@ namespace RepositoryLayer.FundooRepository.MSMQUtility
                     mailMessage.Subject = mailSubject;
                     //var messageBody = msmqQueue.msmq.receiverMessage();
                     //user = messageBody;
-                    string url = $"Click on following link to reset your credentials for Fundoonotes: https://localhost:44361/api/Fundoo/reset-password/{data }";
-                    mailMessage.Body = url;
+               
+                    string url = $"https://localhost:44361/api/Fundoo/reset-password/{data }";
+                    string text = $"<div style='text-align: center'>" +
+                  $"<p>Click on following link to reset your credentials for Fundoonotes:</p>" +
+                $"<a href='{url}' style ='color:#f44336'>Click Here To Reset Password</a>" +
+                $"</div>";
+                    mailMessage.Body = text;
                     mailMessage.IsBodyHtml = true;
                     SmtpClient Smtp = new SmtpClient();
                     Smtp.Host = "smtp.gmail.com";
@@ -100,7 +111,7 @@ namespace RepositoryLayer.FundooRepository.MSMQUtility
        
         public string ExtractData(string token)
         {
-            var key = Encoding.ASCII.GetBytes("112233445566778800");
+            var key = Encoding.ASCII.GetBytes(Secret);
             JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
             TokenValidationParameters parameters = new TokenValidationParameters
             {

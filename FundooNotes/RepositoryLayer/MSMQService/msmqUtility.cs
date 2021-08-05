@@ -12,9 +12,13 @@ namespace RepositoryLayer.FundooRepository.MSMQUtility
     class msmqUtility
     {
         private string Secret;
-        public msmqUtility(IConfiguration configuration)
+        //public msmqUtility(IConfiguration configuration)
+        //{
+        //    Secret = configuration.GetSection("AppSettings").GetSection("Secret").Value;
+        //}
+        public msmqUtility(string Secret)
         {
-            Secret = configuration.GetSection("AppSettings").GetSection("Secret").Value;
+            this.Secret = Secret;
         }
         MessageQueue msmqQueue = new MessageQueue();
        // private string mailSubject;
