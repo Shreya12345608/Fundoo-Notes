@@ -1,3 +1,4 @@
+using BussinessLayer.FundooBussiness;
 using BussinessLayer.IFundooBussiness;
 using BussinessLayer.Service;
 using CommanLayer;
@@ -15,6 +16,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RepositoryLayer;
 using RepositoryLayer.FundooRepository;
+using RepositoryLayer.IFundooRepository;
 using RepositoryLayer.IRepository;
 using System;
 using System.Collections.Generic;
@@ -41,6 +43,8 @@ namespace FundooNotes
             services.AddControllers();
             services.AddScoped<IUserAccountBL, UserAccountBL>();
             services.AddScoped<IUserAccountRL, UserAccountRL>();
+            services.AddScoped<IFundooNoteBL, FundooNoteBL>();
+            services.AddScoped<IFundooNoteRL, FundooNoteRL>();
 
             //services.Configure<Settings>(Configuration.GetSection("AppSettings"));
             var authenticationSettings = Configuration.GetSection("AppSettings");
@@ -111,7 +115,7 @@ namespace FundooNotes
             {
                 endpoints.MapControllers();
             });
-            
+
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
 

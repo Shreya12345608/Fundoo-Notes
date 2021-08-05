@@ -80,7 +80,7 @@ namespace RepositoryLayer.FundooRepository
             try
             {
 
-                string pass = EncryptPassword(password);
+               // string pass = EncryptPassword(password);
                 UserAccountDetails userValidation = fundooContext.FondooNotes.FirstOrDefault(user => user.UserEmail == userEmail && user.Password == password);
                 //userAccountDetails.Password = pass;
                 return userValidation;

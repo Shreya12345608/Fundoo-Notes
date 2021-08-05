@@ -11,7 +11,12 @@ namespace RepositoryLayer.IFundooRepository
         /// method for Add Notes
         /// </summary>
         /// <param name="notes"></param>
-       public NotesModel AddNotes(NotesModel notes);
+        public bool AddNotes(AddNote notes, int userId);
+        /// <summary>
+        /// List all the Notes from the table
+        /// </summary>
+        /// <returns></returns>
+        public List<NotesModel> GetAll();
 
     }
 }

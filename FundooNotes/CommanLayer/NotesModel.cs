@@ -52,7 +52,7 @@ namespace CommanLayer
         /// <value>
         /// The created date.
         /// </value>
-        public DateTime CreatedDate { get; set; }
+        public DateTime? CreatedDate { get; set; }
 
         /// <summary>
         /// Gets or sets the modified date.
@@ -60,7 +60,7 @@ namespace CommanLayer
         /// <value>
         /// The modified date.
         /// </value>
-        public DateTime ModifiedDate { get; set; }
+        public DateTime? ModifiedDate { get; set; }
 
         /// <summary>
         /// Gets or sets the reminder.
@@ -113,4 +113,5 @@ namespace CommanLayer
         public string Image { get; set; }
         public UserAccountDetails UserAccount { get; set; }
     }
+
 }

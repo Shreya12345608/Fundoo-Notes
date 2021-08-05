@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading;
@@ -33,6 +32,7 @@ namespace FundooNotes.Controllers
         {
             try
             {
+
                 var fundoos = Fundoo.GetFundoo();
                 return this.Ok(new { Success = true, Message = "Get User SuccessFull", Data = fundoos });
             }
@@ -52,7 +52,7 @@ namespace FundooNotes.Controllers
         /// </summary>
         /// <param name="adduser"></param>
         /// <returns></returns>
-       // [AllowAnonymous]
+        // [AllowAnonymous]
         [HttpPost]
         [Route("registration")]
         public ActionResult AddUser(UserAccountDetails adduser)
@@ -104,7 +104,7 @@ namespace FundooNotes.Controllers
                     return Ok(new { sucess = true, message = "User Logged in Successfull", Data = users, Token });
 
                 }
-                return NotFound(new { sucess = false, message = "Invalid details- Login Fail" });
+                return NotFound(new { sucess = false, message = "Invalid details- Login Failed" });
             }
             catch (Exception ex)
             {
@@ -129,10 +129,10 @@ namespace FundooNotes.Controllers
                 Task.Delay(5000);
                 if (forgetpass)
                 {
-                    return Ok(new { Success = true, message = "Valid details" });
+                    return Ok(new { Success = true, message = "Link has sent to the given email address to reset the password" });
 
                 }
-                return NotFound(new { Sucess = false, message = "No user Exist" });
+                return NotFound(new { Sucess = false, message = "Unable to sent link to given email address.This Email doesn't exist in database." });
             }
             catch (Exception ex)
             {
@@ -161,9 +161,9 @@ namespace FundooNotes.Controllers
                 bool resetPaswrd = Fundoo.ResetPassword(resetPassword, userId);
                 if (resetPaswrd)
                 {
-                    return Ok(new { Success = true, message = "Password Reset Successfully" });
+                    return Ok(new { Success = true, message = "Password Reset Successfull !" });
                 }
-                return NotFound(new { Sucess = false, message = "Failed to Reset Password." });
+                return NotFound(new { Sucess = false, message = "Failed to Reset Password. Given Email doesn't exist in database." });
             }
             catch (Exception ex)
             {

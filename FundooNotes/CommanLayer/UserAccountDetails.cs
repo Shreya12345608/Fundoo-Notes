@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CommanLayer
 {
-    [Index(nameof(UserEmail), IsUnique = true)]
+
     public class UserAccountDetails
     {
         //Unique Autoincrement User id
