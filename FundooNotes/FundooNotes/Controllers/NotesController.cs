@@ -81,5 +81,20 @@ namespace FundooNotes.Controllers
                 return this.BadRequest(new { Success = false,Message = ex.Message, StackTrace = ex.StackTrace});
             }
         }
+
+        [HttpPut]
+        [Route("trash/{noteId}")]
+        public ActionResult Trash(int noteId, NoteTrash noteTrash)
+        {
+            try
+            {
+                this.fundooNoteBL.Trash(noteId, noteTrash.IsTrash );
+                return Ok(new { success = true, message = $"Updated" });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { success = false, message = $"Update Fail." });
+            }
+        }
     }
 }

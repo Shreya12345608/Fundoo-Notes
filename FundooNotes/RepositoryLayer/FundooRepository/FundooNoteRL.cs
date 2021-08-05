@@ -84,5 +84,31 @@ namespace RepositoryLayer.FundooRepository
             }
             return addNotees;
         }
+        /// <summary>
+        ///  Method to Trash 
+        /// </summary>
+        /// <param name="NotesId"></param>
+        /// <returns></returns>
+        public void Trash(int NotesId,bool IsTrash)
+        {
+            try
+            {
+                var result = fundooContext.NotesDB.FirstOrDefault(trash => trash.NotesId == NotesId);
+                if (result != null)
+                {
+                    result.IsTrash = IsTrash;
+                    fundooContext.SaveChanges();
+                }
+                else
+                {
+                    throw new Exception("No such NoteId Exist");
+                }
+            }
+            catch
+            {
+
+                throw;
+            }
+        }
     }
 }

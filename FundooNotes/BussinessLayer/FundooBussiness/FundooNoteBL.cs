@@ -16,7 +16,7 @@ namespace BussinessLayer.FundooBussiness
             this.fundooNoteRL = fundooNoteRL;
         }
         /// <summary>
-        /// Add Note
+        /// Method for Add Note
         /// </summary>
         /// <param name="notes"></param>
 
@@ -32,12 +32,21 @@ namespace BussinessLayer.FundooBussiness
             }
         }
         /// <summary>
-        /// List all the Notes From the DB
+        /// Method List all the Notes From the DB
         /// </summary>
         /// <returns></returns>
         public List<AddNote> GetAll()
         {
             return this.fundooNoteRL.GetAll();
+        }
+        /// <summary>
+        ///  Method to Trash 
+        /// </summary>
+        /// <param name="NotesId"></param>
+        /// <returns></returns>
+        public void Trash(int NotesId, bool IsTrash)
+        {
+             this.fundooNoteRL.Trash(NotesId, IsTrash);
         }
     }
 

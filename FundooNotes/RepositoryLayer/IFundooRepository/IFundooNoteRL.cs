@@ -18,7 +18,12 @@ namespace RepositoryLayer.IFundooRepository
         /// <returns></returns>
         public List<AddNote> GetAll();
 
-        
+        /// <summary>
+        /// Method Declaration to Trash or Restore a note
+        /// </summary>
+        /// <param name="id">note id</param>
+        /// <returns>string message</returns>
+        public void Trash(int NotesId, bool IsTrash);
 
     }
 }
