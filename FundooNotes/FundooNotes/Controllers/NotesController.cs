@@ -35,7 +35,6 @@ namespace FundooNotes.Controllers
         /// <param name="notes"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("addNote")]
         public ActionResult AddNotes(AddNote notes)
         {
             try
@@ -71,30 +70,56 @@ namespace FundooNotes.Controllers
         {
             try
             {
-
-                var fundoos = fundooNoteBL.GetAll();
-                return this.Ok(new { Success = true, Message = "Get Note SuccessFull", Data = fundoos });
+                int userId = GetIdFromToken();
+                var fundoos = fundooNoteBL.GetAll(userId);
+                if (fundoos != null)
+                {
+                    return this.Ok(new { Success = true, Message = "Get Note SuccessFull", Data = fundoos });
+                }
+                return this.BadRequest(new { Success = false, Message = "NO Notes To  be Display" });
             }
             catch (Exception ex)
             {
 
-                return this.BadRequest(new { Success = false,Message = ex.Message, StackTrace = ex.StackTrace});
+                return this.BadRequest(new { Success = false, Message = ex.Message, StackTrace = ex.StackTrace });
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="noteId"></param>
+        /// <param name="noteTrash"></param>
+        /// <returns></returns>
         [HttpPut]
-        [Route("trash/{noteId}")]
-        public ActionResult Trash(int noteId, NoteTrash noteTrash)
+        [Route("{noteId}/Trash")]
+        public ActionResult Trash(int noteId)
         {
             try
             {
-                this.fundooNoteBL.Trash(noteId, noteTrash.IsTrash );
-                return Ok(new { success = true, message = $"Updated" });
+                this.fundooNoteBL.Trash(noteId);
+
+                return Ok(new { success = true, message = $"Updated The Trash" });
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                return BadRequest(new { success = false, message = $"Update Fail." });
+                return BadRequest(new { success = false, message = $"Unable to  Trash note." });
             }
+        }
+        [HttpPut]
+        [Route("{noteId}/Archive")]
+        public ActionResult Archive(int noteId)
+        {
+            try
+            {
+
+                this.fundooNoteBL.Archive(noteId);
+                return Ok(new { success = true, message = $"Updated The Trash" });
+            }
+            catch (Exception)
+            {
+
+                return BadRequest(new { success = false, message = $"Unable to  Trash note." });
+            };
         }
     }
 }

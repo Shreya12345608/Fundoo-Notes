@@ -61,13 +61,43 @@ namespace RepositoryLayer.FundooRepository
                 throw;
             }
         }
+
+
         /// <summary>
         /// list all the notes From the table
         /// </summary>
         /// <returns></returns>
-        public List<AddNote> GetAll()
+        public List<NotesModel> GetAll(int userId)
         {
             List<NotesModel> notes = fundooContext.NotesDB.ToList().FindAll(note => note.IsArchive == false && note.IsTrash == false);
+            // AddNote addNote = new AddNote();
+            //List<AddNote> addNotees = new List<AddNote>();
+            //foreach (var addNotes in notes)
+            //{
+            //    addNote.Title = addNotes.Title;
+            //    addNote.Description = addNotes.Description;
+            //    addNote.Reminder = addNotes.Reminder;
+            //    addNote.IsArchive = addNotes.IsArchive;
+            //    addNote.IsTrash = addNotes.IsTrash;
+            //    addNote.IsPin = addNotes.IsPin;
+            //    addNote.Color = addNotes.Color;
+            //    addNote.Image = addNotes.Image;
+            //    addNotees.Add(addNote);
+            //}
+            //return addNotees;
+            if (notes.Count != 0)
+            {
+                return notes;
+            }
+            return null;
+        }
+        /// <summary>
+        /// Get all trash
+        /// </summary>
+        /// <returns></returns>
+        public List<AddNote> GetAllTrash()
+        {
+            List<NotesModel> notes = fundooContext.NotesDB.ToList().FindAll(note => note.IsTrash == true);
             AddNote addNote = new AddNote();
             List<AddNote> addNotees = new List<AddNote>();
             foreach (var addNotes in notes)
@@ -84,24 +114,29 @@ namespace RepositoryLayer.FundooRepository
             }
             return addNotees;
         }
+
         /// <summary>
         ///  Method to Trash 
         /// </summary>
         /// <param name="NotesId"></param>
         /// <returns></returns>
-        public void Trash(int NotesId,bool IsTrash)
+        public void Trash(int NotesId)
         {
             try
             {
                 var result = fundooContext.NotesDB.FirstOrDefault(trash => trash.NotesId == NotesId);
                 if (result != null)
                 {
-                    result.IsTrash = IsTrash;
-                    fundooContext.SaveChanges();
-                }
-                else
-                {
-                    throw new Exception("No such NoteId Exist");
+                    if (result.IsTrash == false)
+                    {
+                        result.IsTrash = true;
+                        this.fundooContext.SaveChanges();
+                    }
+                    else
+                    {
+                        result.IsTrash = false;
+                        this.fundooContext.SaveChanges();
+                    }
                 }
             }
             catch
@@ -110,5 +145,35 @@ namespace RepositoryLayer.FundooRepository
                 throw;
             }
         }
+        /// <summary>
+        /// Method for Archive
+        /// </summary>
+        /// <param name="NoteId"></param>
+        public void Archive(int NoteId)
+        {
+            try
+            {
+                var resultArcive = fundooContext.NotesDB.FirstOrDefault(archive => archive.NotesId == NoteId);
+                if (resultArcive != null)
+                {
+                    if (resultArcive.IsArchive == false)
+                    {
+                        resultArcive.IsArchive = true;
+                        this.fundooContext.SaveChanges();
+                    }
+                    else
+                    {
+                        resultArcive.IsArchive = false;
+                        this.fundooContext.SaveChanges();
+                    }
+                }
+            }
+            catch
+            {
+
+                throw;
+            }
+        }
+
     }
 }

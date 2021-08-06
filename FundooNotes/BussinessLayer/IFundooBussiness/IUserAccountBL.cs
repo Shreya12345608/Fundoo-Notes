@@ -18,7 +18,7 @@ namespace BussinessLayer.IFundooBussiness
         /// </summary>
         /// <param name="adduser"></param>
         /// <returns></returns>
-        public UserAccountDetails AddUser(UserAccountDetails addUser);
+        public bool AddUser(AddUserModel addUser);
 
         /// <summary>
         /// login user
@@ -26,7 +26,7 @@ namespace BussinessLayer.IFundooBussiness
         /// <param name="userEmail"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        public UserAccountDetails LoginAccount(string userEmail, string password);
+        public LoginResponse LoginAccount(string userEmail, string password);
         /// <summary>
         /// Create token
         /// </summary>

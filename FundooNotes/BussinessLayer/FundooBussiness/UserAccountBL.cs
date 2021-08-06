@@ -33,12 +33,13 @@ namespace BussinessLayer.Service
         /// </summary>
         /// <param name="adduser"></param>
         /// <returns></returns>
-        public UserAccountDetails AddUser(UserAccountDetails addUser)
+        public bool AddUser(AddUserModel addUser)
         {
+
             try
             {
-                fundoo.AddUser(addUser);
-                return addUser;
+                return fundoo.AddUser(addUser);
+
             }
             catch
             {
@@ -63,7 +64,7 @@ namespace BussinessLayer.Service
                 throw;
             }
         }
-            
+
 
         //----------------------------LOGIN ACCOUNT---------------------------------------------//
         /// <summary>
@@ -72,7 +73,7 @@ namespace BussinessLayer.Service
         /// <param name="userEmail"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        public UserAccountDetails LoginAccount(string userEmail, string password)
+        public LoginResponse LoginAccount(string userEmail, string password)
         {
             try
             {
@@ -98,33 +99,15 @@ namespace BussinessLayer.Service
                 bool result;
                 string mailSubject = "Link to reset your FundooNotes App Credentials";
                 //var userCheck = this.fundooContext.FondooNotes.SingleOrDefault(x => x.UserEmail == UserEmail);
-                var existingUser = fundoo.GetUser(UserEmail); 
+                var existingUser = fundoo.GetUser(UserEmail);
                 if (existingUser != null)
                 {
                     string token = CreateToken(existingUser.UserEmail, existingUser.Userid);
                     msmqUtility msmq = new msmqUtility(Secret);
-
                     msmq.SendMessage(UserEmail, token);
-                   // var messageBody = msmq.receiverMessage();
-                    //user = messageBody;
-                    //using (MailMessage mailMessage = new MailMessage("malviyashreya26@gmail.com", UserEmail))
-                    //{
-                    //    mailMessage.Subject = mailSubject;
-                    //    mailMessage.Body = user;
-                    //    mailMessage.IsBodyHtml = true;
-                    //    SmtpClient Smtp = new SmtpClient();
-                    //    Smtp.Host = "smtp.gmail.com";
-                    //    Smtp.EnableSsl = true;
-                    //    Smtp.UseDefaultCredentials = false;
-                    //    Smtp.Credentials = new NetworkCredential("malviyashreya26@gmail.com", "Shreya@123");
-                    //    Smtp.Port = 587;
-                    //    Smtp.Send(mailMessage);
-                    //}
-
                     result = true;
                     return result;
                 }
-
                 result = false;
                 return result;
             }
@@ -143,7 +126,7 @@ namespace BussinessLayer.Service
         {
             try
             {
-                return fundoo.ResetPassword(reset,userId);
+                return fundoo.ResetPassword(reset, userId);
             }
             catch
             {
@@ -176,7 +159,7 @@ namespace BussinessLayer.Service
             return jwtToken;
         }
 
-        
+
     }
 
 }

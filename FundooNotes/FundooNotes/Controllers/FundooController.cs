@@ -55,8 +55,8 @@ namespace FundooNotes.Controllers
         /// <returns></returns>
         // [AllowAnonymous]
         [HttpPost]
-        [Route("registration")]
-        public ActionResult AddUser(UserAccountDetails adduser)
+        [Route("register")]
+        public ActionResult AddUser(AddUserModel adduser)
         {
             try
             {
@@ -92,7 +92,6 @@ namespace FundooNotes.Controllers
         /// <returns></returns>
        // [AllowAnonymous]
         [HttpPost]
-        [Route("Login")]
         public ActionResult UserLogin(LoginModel loginModel)
         {
             try
@@ -102,7 +101,7 @@ namespace FundooNotes.Controllers
                 if (users != null)
                 {
                     string Token = Fundoo.CreateToken(users.UserEmail, users.Userid);
-                    return Ok(new { sucess = true, message = "User Logged in Successfull", Data = users, Token });
+                    return Ok(new { sucess = true, message = "User Logged in Successfull", Data = users.FirstName,users.LastName,users.UserEmail ,Token });
 
                 }
                 return NotFound(new { sucess = false, message = "Invalid details- Login Failed" });
@@ -149,7 +148,7 @@ namespace FundooNotes.Controllers
         /// <returns></returns>
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPut]
-        [Route("reset-password/{Token}")]
+        [Route("reset-password")]
         public ActionResult ResetPassword([FromRoute] string Token, ResetPassword resetPassword)
         {
 

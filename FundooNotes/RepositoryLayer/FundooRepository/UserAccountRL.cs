@@ -29,13 +29,31 @@ namespace RepositoryLayer.FundooRepository
         /// </summary>
         /// <param name="addUser"></param>
         /// <returns></returns>
-        public UserAccountDetails AddUser(UserAccountDetails addUser)
+        public  bool AddUser(AddUserModel addUser)
         {
             try
             {
-                fundooContext.FondooNotes.Add(addUser);
-                int row = fundooContext.SaveChanges();
-                return row == 1 ? addUser : null;
+                UserAccountDetails user = new UserAccountDetails()
+                {
+                    FirstName = addUser.FirstName,
+                    LastName = addUser.LastName,
+                    UserEmail = addUser.UserEmail,
+                    Password = EncryptPassword(addUser.Password)
+                };
+                if(user != null)
+                {
+                    addUser.Password = EncryptPassword(addUser.Password);
+                    fundooContext.FondooNotes.Add(user);
+                    fundooContext.SaveChanges();
+                    return true;
+
+                }
+                return false;
+
+                //fundooContext.FondooNotes.Add(addUser);
+                //int row = fundooContext.SaveChanges();
+                //return row == 1 ? addUser : null;
+
             }
             catch
             {
@@ -75,19 +93,33 @@ namespace RepositoryLayer.FundooRepository
                 throw;
             }
         }
-        public UserAccountDetails UserLogin(string userEmail, string password)
+        public LoginResponse UserLogin(string userEmail, string password)
         {
             try
             {
 
-               // string pass = EncryptPassword(password);
-                UserAccountDetails userValidation = fundooContext.FondooNotes.FirstOrDefault(user => user.UserEmail == userEmail && user.Password == password);
-                //userAccountDetails.Password = pass;
-                return userValidation;
+               // string pass = DecodePassword(password);
+                var userValidation = fundooContext.FondooNotes.FirstOrDefault(user => user.UserEmail == userEmail && user.Password == password);
+                AddUserModel newuser = new AddUserModel();
+               // newuser.Password = pass;
+
+                if (userValidation == null)
+                {
+                    return null;
+                }
+
+                LoginResponse loginResponse = new LoginResponse();
+
+                //loginResponse.Token = GenerateToken(userValidation.UserEmail, userValidation.Userid);
+                loginResponse.Userid = userValidation.Userid;
+                loginResponse.FirstName = userValidation.FirstName;
+                loginResponse.LastName = userValidation.LastName;
+                loginResponse.UserEmail = userValidation.UserEmail;
+                return loginResponse;
             }
-            catch (Exception ex)
+            catch 
             {
-                throw new Exception(ex.Message);
+                throw;
             }
         }
         /// <summary>
@@ -126,6 +158,30 @@ namespace RepositoryLayer.FundooRepository
                 byte[] encrypt = provider.ComputeHash(encoding.GetBytes(Password));
                 String encrypted = Convert.ToBase64String(encrypt);
                 return encrypted;
+            }
+            catch
+            {
+
+                throw;
+            }
+        }
+        /// <summary>
+        /// ability to decrypt password into human readable format
+        /// </summary>
+        /// <param name="encPassword"></param>
+        /// <returns>decrypted password</returns>
+        private string DecodePassword(string encPassword)
+        {
+            try
+            {
+                UTF8Encoding encoder = new UTF8Encoding();
+                Decoder decoder = encoder.GetDecoder();
+                byte[] todecodeByte = Convert.FromBase64String(encPassword);
+                int charCount = decoder.GetCharCount(todecodeByte, 0, todecodeByte.Length);
+                char[] decodeChar = new char[charCount];
+                decoder.GetChars(todecodeByte, 0, todecodeByte.Length, decodeChar, 0);
+                string password = new String(decodeChar);
+                return password;
             }
             catch
             {

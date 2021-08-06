@@ -18,14 +18,14 @@ namespace RepositoryLayer.IRepository
         /// </summary>
         /// <param name="adduser"></param>
         ///<returns></returns>
-        UserAccountDetails AddUser(UserAccountDetails addUser);
+        bool AddUser(AddUserModel addUser);
 
         /// <summary>
         /// Login user
         /// </summary>
         /// <param name="loginModel"></param>
         /// <returns></returns>
-        UserAccountDetails UserLogin(string userEmail, string password);
+        LoginResponse UserLogin(string userEmail, string password);
         /// <summary>
         /// Forget Password
         /// </summary>
