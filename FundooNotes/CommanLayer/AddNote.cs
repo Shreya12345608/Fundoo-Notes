@@ -13,10 +13,9 @@ namespace CommanLayer
 
         [DefaultValue(false)]
         public bool IsArchive { get; set; }
-
+        public DateTime? CreatedDate { get; set; }
         [DefaultValue(false)]
         public bool IsTrash { get; set; }
-        /// </value>
         [DefaultValue(false)]
         public bool IsPin { get; set; }
         public string Color { get; set; }

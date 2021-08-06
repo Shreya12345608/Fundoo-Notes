@@ -34,6 +34,7 @@ namespace RepositoryLayer.FundooRepository
                     Title = notes.Title,
                     Description = notes.Description,
                     Reminder = notes.Reminder,
+                    CreatedDate = DateTime.Parse(DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss")),
                     IsArchive = notes.IsArchive,
                     IsTrash = notes.IsTrash,
                     IsPin = notes.IsPin,
@@ -145,6 +146,7 @@ namespace RepositoryLayer.FundooRepository
                 throw;
             }
         }
+
         /// <summary>
         /// Method for Archive
         /// </summary>
@@ -174,6 +176,28 @@ namespace RepositoryLayer.FundooRepository
                 throw;
             }
         }
-
+        /// <summary>
+        /// Get all trash
+        /// </summary>
+        /// <returns></returns>
+        public List<AddNote> GetAllArchive()
+        {
+            List<NotesModel> notes = fundooContext.NotesDB.ToList().FindAll(note => note.IsArchive == true);
+            AddNote addNote = new AddNote();
+            List<AddNote> addNotees = new List<AddNote>();
+            foreach (var addNotes in notes)
+            {
+                addNote.Title = addNotes.Title;
+                addNote.Description = addNotes.Description;
+                addNote.Reminder = addNotes.Reminder;
+                addNote.IsArchive = addNotes.IsArchive;
+                addNote.IsTrash = addNotes.IsTrash;
+                addNote.IsPin = addNotes.IsPin;
+                addNote.Color = addNotes.Color;
+                addNote.Image = addNotes.Image;
+                addNotees.Add(addNote);
+            }
+            return addNotees;
+        }
     }
 }

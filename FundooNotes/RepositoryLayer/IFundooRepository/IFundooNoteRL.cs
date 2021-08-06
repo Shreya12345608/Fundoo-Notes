@@ -30,11 +30,18 @@ namespace RepositoryLayer.IFundooRepository
         /// <returns></returns>
         public List<AddNote> GetAllTrash();
 
+
         /// <summary>
         /// Method Declaration to Archive or Restore a note
         /// </summary>
         /// <param name="NoteId"></param>
         public void Archive(int NoteId);
+
+        /// <summary>
+        /// List all the Trash Notes from the table
+        /// </summary>
+        /// <returns></returns>
+        public List<AddNote> GetAllArchive();
 
     }
 }

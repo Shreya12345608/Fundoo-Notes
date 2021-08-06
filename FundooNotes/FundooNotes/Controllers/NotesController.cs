@@ -105,6 +105,36 @@ namespace FundooNotes.Controllers
                 return BadRequest(new { success = false, message = $"Unable to  Trash note." });
             }
         }
+        /// <summary>
+        /// Get all trash Note
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("trash")]
+        public ActionResult GetAllTrash()
+        {
+            try
+            {
+                int userId = GetIdFromToken();
+                var trash = fundooNoteBL.GetAll(userId);
+                if (trash != null)
+                {
+
+                    return this.Ok(new { Success = true, Message = "Trash Notes retrieved Successfully", Data = trash });
+                }
+                return this.BadRequest(new { Success = false, Message = "Unable to retrieve Trash notes." });
+            }
+            catch (Exception ex)
+            {
+
+                return this.BadRequest(new { Success = false, Message = ex.Message, StackTrace = ex.StackTrace });
+            }
+        }
+        /// <summary>
+        /// set amd restore the archive
+        /// </summary>
+        /// <param name="noteId"></param>
+        /// <returns></returns>
         [HttpPut]
         [Route("{noteId}/Archive")]
         public ActionResult Archive(int noteId)
@@ -120,6 +150,30 @@ namespace FundooNotes.Controllers
 
                 return BadRequest(new { success = false, message = $"Unable to  Trash note." });
             };
+        }
+        /// <summary>
+        /// Get all Archive Note
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("archive")]
+        public ActionResult GetAllArchive()
+        {
+            try
+            {
+                int userId = GetIdFromToken();
+                var archive = fundooNoteBL.GetAll(userId);
+                if (archive != null)
+                {
+                    return this.Ok(new { Success = true, Message = "Archive Notes retrieved Successfully", Data = archive });
+                }
+                return this.BadRequest(new { Success = false, Message = "Unable to retrieve Archive notes." });
+            }
+            catch (Exception ex)
+            {
+
+                return this.BadRequest(new { Success = false, Message = ex.Message, StackTrace = ex.StackTrace });
+            }
         }
     }
 }
