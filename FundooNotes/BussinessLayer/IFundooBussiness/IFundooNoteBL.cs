@@ -16,13 +16,13 @@ namespace BussinessLayer.IFundooBussiness
         /// List all the Notes from the table
         /// </summary>
         /// <returns></returns>
-        public List<NotesModel> GetAll(int userId);
+        public List<AddNote> GetAll(int userId);
 
         /// <summary>
         /// List all the Trash Notes from the table
         /// </summary>
         /// <returns></returns>
-        public List<AddNote> GetAllTrash();
+        public List<NotesModel> GetAllTrash(int userId);
 
         /// <summary>
         /// Method Declaration to Trash or Restore a note
@@ -35,6 +35,24 @@ namespace BussinessLayer.IFundooBussiness
         /// Method Declaration to Archive or Restore a note
         /// </summary>
         /// <param name="NoteId"></param>
-        public void Archive(int NoteId);
+        public void Archive(int NotesId);
+        /// <summary>
+        ///Model Delete Note 
+        /// </summary>
+        /// <param name="notesId"></param>
+        /// <returns></returns>
+
+        /// <summary>
+        /// List all the Trash Notes from the table
+        /// </summary>
+        /// <returns></returns>
+        public List<NotesModel> GetAllArchive(int userId);
+        /// <summary>
+        ///Model Delete Note 
+        /// </summary>
+        /// <param name="notesId"></param>
+        /// <returns></returns>
+        public bool DeleteNote(int notesId);
     }
 }
+

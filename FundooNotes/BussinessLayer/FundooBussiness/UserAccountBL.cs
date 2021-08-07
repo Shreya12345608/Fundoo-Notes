@@ -97,7 +97,7 @@ namespace BussinessLayer.Service
             try
             {
                 bool result;
-                string mailSubject = "Link to reset your FundooNotes App Credentials";
+               // string mailSubject = "Link to reset your FundooNotes App Credentials";
                 //var userCheck = this.fundooContext.FondooNotes.SingleOrDefault(x => x.UserEmail == UserEmail);
                 var existingUser = fundoo.GetUser(UserEmail);
                 if (existingUser != null)

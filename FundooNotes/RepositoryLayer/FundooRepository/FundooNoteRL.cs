@@ -68,53 +68,61 @@ namespace RepositoryLayer.FundooRepository
         /// list all the notes From the table
         /// </summary>
         /// <returns></returns>
-        public List<NotesModel> GetAll(int userId)
+        public List<AddNote> GetAll(int userId)
         {
-            List<NotesModel> notes = fundooContext.NotesDB.ToList().FindAll(note => note.IsArchive == false && note.IsTrash == false);
-            // AddNote addNote = new AddNote();
-            //List<AddNote> addNotees = new List<AddNote>();
-            //foreach (var addNotes in notes)
-            //{
-            //    addNote.Title = addNotes.Title;
-            //    addNote.Description = addNotes.Description;
-            //    addNote.Reminder = addNotes.Reminder;
-            //    addNote.IsArchive = addNotes.IsArchive;
-            //    addNote.IsTrash = addNotes.IsTrash;
-            //    addNote.IsPin = addNotes.IsPin;
-            //    addNote.Color = addNotes.Color;
-            //    addNote.Image = addNotes.Image;
-            //    addNotees.Add(addNote);
-            //}
-            //return addNotees;
-            if (notes.Count != 0)
+            try
             {
-                return notes;
+                List<NotesModel> notes = fundooContext.NotesDB.ToList().FindAll(note => note.IsArchive == false && note.IsTrash == false);
+                List<AddNote> list = new List<AddNote>();
+
+                foreach (var addNotes in notes)
+                {
+                    AddNote addNote = new AddNote();
+                    addNote.Title = addNotes.Title;
+                    addNote.Description = addNotes.Description;
+                    addNote.Reminder = addNotes.Reminder;
+                    addNote.IsArchive = addNotes.IsArchive;
+                    addNote.IsTrash = addNotes.IsTrash;
+                    addNote.IsPin = addNotes.IsPin;
+                    addNote.Color = addNotes.Color;
+                    addNote.Image = addNotes.Image;
+                    addNote.userId = addNote.userId;
+                    list.Add(addNote);
+                }
+                if (list.Count != 0)
+                {
+                    return list;
+                }
+                return null;
             }
-            return null;
+            catch
+            {
+
+                throw;
+            }
         }
         /// <summary>
         /// Get all trash
         /// </summary>
         /// <returns></returns>
-        public List<AddNote> GetAllTrash()
+        public List<NotesModel> GetAllTrash(int userId)
         {
-            List<NotesModel> notes = fundooContext.NotesDB.ToList().FindAll(note => note.IsTrash == true);
-            AddNote addNote = new AddNote();
-            List<AddNote> addNotees = new List<AddNote>();
-            foreach (var addNotes in notes)
+            try
             {
-                addNote.Title = addNotes.Title;
-                addNote.Description = addNotes.Description;
-                addNote.Reminder = addNotes.Reminder;
-                addNote.IsArchive = addNotes.IsArchive;
-                addNote.IsTrash = addNotes.IsTrash;
-                addNote.IsPin = addNotes.IsPin;
-                addNote.Color = addNotes.Color;
-                addNote.Image = addNotes.Image;
-                addNotees.Add(addNote);
+                var trash = fundooContext.NotesDB.Where(x => x.IsTrash == true && x.UserAccount.Userid == userId).ToList();
+                if (trash.Count != 0)
+                {
+                    return trash;
+                }
+                return null;
             }
-            return addNotees;
+            catch
+            {
+
+                throw;
+            }
         }
+
 
         /// <summary>
         ///  Method to Trash 
@@ -151,11 +159,11 @@ namespace RepositoryLayer.FundooRepository
         /// Method for Archive
         /// </summary>
         /// <param name="NoteId"></param>
-        public void Archive(int NoteId)
+        public void Archive(int NotesId)
         {
             try
             {
-                var resultArcive = fundooContext.NotesDB.FirstOrDefault(archive => archive.NotesId == NoteId);
+                var resultArcive = fundooContext.NotesDB.FirstOrDefault(archive => archive.NotesId == NotesId);
                 if (resultArcive != null)
                 {
                     if (resultArcive.IsArchive == false)
@@ -180,24 +188,50 @@ namespace RepositoryLayer.FundooRepository
         /// Get all trash
         /// </summary>
         /// <returns></returns>
-        public List<AddNote> GetAllArchive()
+        public List<NotesModel> GetAllArchive(int userId)
         {
-            List<NotesModel> notes = fundooContext.NotesDB.ToList().FindAll(note => note.IsArchive == true);
-            AddNote addNote = new AddNote();
-            List<AddNote> addNotees = new List<AddNote>();
-            foreach (var addNotes in notes)
+            try
             {
-                addNote.Title = addNotes.Title;
-                addNote.Description = addNotes.Description;
-                addNote.Reminder = addNotes.Reminder;
-                addNote.IsArchive = addNotes.IsArchive;
-                addNote.IsTrash = addNotes.IsTrash;
-                addNote.IsPin = addNotes.IsPin;
-                addNote.Color = addNotes.Color;
-                addNote.Image = addNotes.Image;
-                addNotees.Add(addNote);
+                var Archive = fundooContext.NotesDB.Where(x => x.IsArchive == true && x.UserAccount.Userid == userId).ToList();
+                if (Archive.Count != 0)
+                {
+                    return Archive;
+                }
+                return null;
             }
-            return addNotees;
+            catch
+            {
+
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Delete Note
+        /// </summary>
+        /// <param name="notesId"></param>
+        /// <returns></returns>
+        public bool DeleteNote(int notesId)
+        {
+            try
+            {
+                var result = fundooContext.NotesDB.FirstOrDefault(delete => delete.NotesId == notesId && delete.IsTrash == true);
+                if (result == null)
+                {
+                    throw new Exception("No Note Exist");
+                }
+                else
+                {
+                    fundooContext.NotesDB.Remove(result);
+                    fundooContext.SaveChanges();
+                    return true;
+                }
+            }
+            catch
+            {
+
+                throw;
+            }
         }
     }
 }

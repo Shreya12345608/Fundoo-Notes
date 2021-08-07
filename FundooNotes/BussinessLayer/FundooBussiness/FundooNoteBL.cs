@@ -44,9 +44,17 @@ namespace BussinessLayer.FundooBussiness
         /// Method List all the Notes From the DB
         /// </summary>
         /// <returns></returns>
-        public List<NotesModel> GetAll(int userId)
+        public List<AddNote> GetAll(int userId)
         {
-            return this.fundooNoteRL.GetAll(userId);
+            try
+            {
+                return this.fundooNoteRL.GetAll(userId);
+            }
+            catch 
+            {
+
+                throw;
+            }
         }
        
         /// <summary>
@@ -56,16 +64,32 @@ namespace BussinessLayer.FundooBussiness
         /// <returns></returns>
         public void Trash(int NotesId)
         {
-            this.fundooNoteRL.Trash(NotesId);
+            try
+            {
+                this.fundooNoteRL.Trash(NotesId);
+            }
+            catch
+            {
+
+                throw;
+            }
         }
 
         /// <summary>
         /// Method for get all trash 
         /// </summary>
         /// <returns></returns>
-        public List<AddNote> GetAllTrash()
+        public List<NotesModel> GetAllTrash(int userId)
         {
-            return this.fundooNoteRL.GetAllTrash();
+            try
+            {
+                return this.fundooNoteRL.GetAllTrash(userId);
+            }
+            catch
+            {
+
+                throw;
+            }
         }
 
 
@@ -73,10 +97,52 @@ namespace BussinessLayer.FundooBussiness
         /// <summary>
         /// Method for Archive
         /// </summary>
-        /// <param name="NoteId"></param>
-        public void Archive(int NoteId)
+        /// <param name="NotesId"></param>
+        public void Archive(int NotesId)
         {
-            this.fundooNoteRL.Archive(NoteId);
+            try
+            {
+                this.fundooNoteRL.Archive(NotesId);
+            }
+            catch
+            {
+
+                throw;
+            }
+        }
+        /// <summary>
+        /// Method Delete a Note 
+        /// </summary>
+        /// <param name="NotesId"></param>
+        /// <returns></returns>
+        public bool DeleteNote(int NotesId)
+        {
+            try
+            {
+                return this.fundooNoteRL.DeleteNote(NotesId);
+            }
+            catch
+            {
+
+                throw;
+            }
+        }
+        /// <summary>
+        ///  get all archive
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public List<NotesModel> GetAllArchive(int userId)
+        {
+            try
+            {
+                return this.fundooNoteRL.GetAllArchive(userId);
+            }
+            catch
+            {
+
+                throw;
+            }
         }
     }
 

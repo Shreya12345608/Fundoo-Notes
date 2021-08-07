@@ -91,18 +91,18 @@ namespace FundooNotes.Controllers
         /// <param name="noteTrash"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("{noteId}/Trash")]
-        public ActionResult Trash(int noteId)
+        [Route("{NotesId}/Trash")]
+        public ActionResult Trash(int NotesId)
         {
             try
             {
-                this.fundooNoteBL.Trash(noteId);
+                this.fundooNoteBL.Trash(NotesId);
 
-                return Ok(new { success = true, message = $"Updated The Trash" });
+                return Ok(new { success = true, message = $"Trash is retrieved Successfully" });
             }
             catch (Exception)
             {
-                return BadRequest(new { success = false, message = $"Unable to  Trash note." });
+                return BadRequest(new { success = false, message = $"Unable to  get any Trash note." });
             }
         }
         /// <summary>
@@ -116,7 +116,7 @@ namespace FundooNotes.Controllers
             try
             {
                 int userId = GetIdFromToken();
-                var trash = fundooNoteBL.GetAll(userId);
+                var trash = fundooNoteBL.GetAllTrash(userId);
                 if (trash != null)
                 {
 
@@ -136,19 +136,19 @@ namespace FundooNotes.Controllers
         /// <param name="noteId"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("{noteId}/Archive")]
-        public ActionResult Archive(int noteId)
+        [Route("{NotesId}/Archive")]
+        public ActionResult Archive(int NotesId)
         {
             try
             {
 
-                this.fundooNoteBL.Archive(noteId);
-                return Ok(new { success = true, message = $"Updated The Trash" });
+                this.fundooNoteBL.Archive(NotesId);
+                return Ok(new { success = true, message = $"Archive is retrieved Successfully" });
             }
             catch (Exception)
             {
 
-                return BadRequest(new { success = false, message = $"Unable to  Trash note." });
+                return BadRequest(new { success = false, message = $"Unable to get Archive note." });
             };
         }
         /// <summary>
@@ -162,7 +162,7 @@ namespace FundooNotes.Controllers
             try
             {
                 int userId = GetIdFromToken();
-                var archive = fundooNoteBL.GetAll(userId);
+                var archive = fundooNoteBL.GetAllArchive(userId);
                 if (archive != null)
                 {
                     return this.Ok(new { Success = true, Message = "Archive Notes retrieved Successfully", Data = archive });
@@ -174,6 +174,31 @@ namespace FundooNotes.Controllers
 
                 return this.BadRequest(new { Success = false, Message = ex.Message, StackTrace = ex.StackTrace });
             }
+        }
+
+        [HttpDelete]
+        public ActionResult DeleteNote(int notesId)
+        {
+            try
+            {
+                var delete = fundooNoteBL.DeleteNote(notesId);
+                if (delete == true)
+                {
+                    return this.Ok(new { Success = true, Message = "Notes detete Successfully", Data = delete });
+                }
+                return this.BadRequest(new { Success = false, Message = "Unable to retrieve Delete notes." });
+            }
+            catch (Exception ex)
+            {
+
+                return this.BadRequest(new
+                {
+                    Success = false,
+                    Message = ex.Message
+                });
+
+            }
+
         }
     }
 }

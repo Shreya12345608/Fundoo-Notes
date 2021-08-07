@@ -16,7 +16,7 @@ namespace RepositoryLayer.IFundooRepository
         /// List all the Notes from the table
         /// </summary>
         /// <returns></returns>
-        public List<NotesModel> GetAll(int userId);
+        public List<AddNote> GetAll(int userId);
 
         /// <summary>
         /// Method Declaration to Trash or Restore a note
@@ -28,20 +28,27 @@ namespace RepositoryLayer.IFundooRepository
         /// List all the Trash Notes from the table
         /// </summary>
         /// <returns></returns>
-        public List<AddNote> GetAllTrash();
+        public List<NotesModel> GetAllTrash(int userId);
 
 
         /// <summary>
         /// Method Declaration to Archive or Restore a note
         /// </summary>
-        /// <param name="NoteId"></param>
-        public void Archive(int NoteId);
+        /// <param name="NotesId"></param>
+        public void Archive(int NotesId);
 
         /// <summary>
-        /// List all the Trash Notes from the table
+        /// List all the Archive Notes from the table
         /// </summary>
         /// <returns></returns>
-        public List<AddNote> GetAllArchive();
+        public List<NotesModel> GetAllArchive(int userId);
+        /// <summary>
+        ///Model Delete Note 
+        /// </summary>
+        /// <param name="notesId"></param>
+        /// <returns></returns>
+       public bool DeleteNote(int NotesId);
+
 
     }
 }

@@ -20,5 +20,14 @@ namespace CommanLayer
         public bool IsPin { get; set; }
         public string Color { get; set; }
         public string Image { get; set; }
+        public int userId
+        {
+            get
+            {
+                UserAccountDetails user = new UserAccountDetails();
+                return user.Userid;
+            }
+            set { }
+        }
     }
 }

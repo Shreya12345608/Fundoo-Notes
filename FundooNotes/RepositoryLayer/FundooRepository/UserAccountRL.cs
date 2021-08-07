@@ -29,7 +29,7 @@ namespace RepositoryLayer.FundooRepository
         /// </summary>
         /// <param name="addUser"></param>
         /// <returns></returns>
-        public  bool AddUser(AddUserModel addUser)
+        public bool AddUser(AddUserModel addUser)
         {
             try
             {
@@ -38,11 +38,11 @@ namespace RepositoryLayer.FundooRepository
                     FirstName = addUser.FirstName,
                     LastName = addUser.LastName,
                     UserEmail = addUser.UserEmail,
-                    Password = EncryptPassword(addUser.Password)
+                    Password = EncodePassword(addUser.Password)
                 };
-                if(user != null)
+                if (user != null)
                 {
-                    addUser.Password = EncryptPassword(addUser.Password);
+                    addUser.Password = EncodePassword(addUser.Password);
                     fundooContext.FondooNotes.Add(user);
                     fundooContext.SaveChanges();
                     return true;
@@ -97,27 +97,25 @@ namespace RepositoryLayer.FundooRepository
         {
             try
             {
-
-               // string pass = DecodePassword(password);
-                var userValidation = fundooContext.FondooNotes.FirstOrDefault(user => user.UserEmail == userEmail && user.Password == password);
-                AddUserModel newuser = new AddUserModel();
-               // newuser.Password = pass;
-
-                if (userValidation == null)
+                var userValidation = fundooContext.FondooNotes.FirstOrDefault(user => user.UserEmail == userEmail);
+                if (userValidation != null)
                 {
-                    return null;
+                    string pass = DecodePassword(userValidation.Password);
+                    if (pass == password)
+                    {
+                        LoginResponse loginResponse = new LoginResponse();
+                        
+                        loginResponse.Userid = userValidation.Userid;
+                        loginResponse.FirstName = userValidation.FirstName;
+                        loginResponse.LastName = userValidation.LastName;
+                        loginResponse.UserEmail = userValidation.UserEmail;
+                        return loginResponse;
+                    }
+              
                 }
-
-                LoginResponse loginResponse = new LoginResponse();
-
-                //loginResponse.Token = GenerateToken(userValidation.UserEmail, userValidation.Userid);
-                loginResponse.Userid = userValidation.Userid;
-                loginResponse.FirstName = userValidation.FirstName;
-                loginResponse.LastName = userValidation.LastName;
-                loginResponse.UserEmail = userValidation.UserEmail;
-                return loginResponse;
+                return null;
             }
-            catch 
+            catch
             {
                 throw;
             }
@@ -139,31 +137,43 @@ namespace RepositoryLayer.FundooRepository
                 throw;
             }
         }
+        ///// <summary>
+        ///// EncryptPassword
+        ///// </summary>
+        ///// <param name="Password"></param>
+        ///// <returns></returns>
+        //private static string EncryptPassword(string Password)
+        //{
+        //    try
+        //    {
+
+        //        //SHA1 hash value for the input data using the
+        //        //implementation provided by the cryptographic service provider (CSP)
+        //        var provider = new SHA1CryptoServiceProvider();
+        //        //Represents a UTF-16 encoding of Unicode characters.
+        //        var encoding = new UnicodeEncoding();
+        //        //encrypt the given password string into Encrypted data  
+        //        byte[] encrypt = provider.ComputeHash(encoding.GetBytes(Password));
+        //        String encrypted = Convert.ToBase64String(encrypt);
+        //        return encrypted;
+        //    }
+        //    catch
+        //    {
+
+        //        throw;
+        //    }
+        //}
         /// <summary>
-        /// EncryptPassword
+        /// ability to encrypt password using UTF8 standards
         /// </summary>
-        /// <param name="Password"></param>
-        /// <returns></returns>
-        private static string EncryptPassword(string Password)
+        /// <param name="password">user password</param>
+        /// <returns>encrypted password</returns>
+        private string EncodePassword(string password)
         {
-            try
-            {
-
-                //SHA1 hash value for the input data using the
-                //implementation provided by the cryptographic service provider (CSP)
-                var provider = new SHA1CryptoServiceProvider();
-                //Represents a UTF-16 encoding of Unicode characters.
-                var encoding = new UnicodeEncoding();
-                //encrypt the given password string into Encrypted data  
-                byte[] encrypt = provider.ComputeHash(encoding.GetBytes(Password));
-                String encrypted = Convert.ToBase64String(encrypt);
-                return encrypted;
-            }
-            catch
-            {
-
-                throw;
-            }
+            byte[] encData = new byte[password.Length];
+            encData = Encoding.UTF8.GetBytes(password);
+            string encodedData = Convert.ToBase64String(encData);
+            return encodedData;
         }
         /// <summary>
         /// ability to decrypt password into human readable format
