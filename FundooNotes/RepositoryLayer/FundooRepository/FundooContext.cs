@@ -21,9 +21,6 @@ namespace RepositoryLayer
             builder.Entity<UserAccountDetails>()
                 .HasIndex(u => u.UserEmail)
                 .IsUnique();
-            builder.Entity<NotesModel>()
-               .HasIndex(u => u.Email)
-               .IsUnique();
         }
         //table name
         public DbSet<UserAccountDetails> FondooNotes { get; set; }

@@ -16,7 +16,7 @@ namespace BussinessLayer.IFundooBussiness
         /// List all the Notes from the table
         /// </summary>
         /// <returns></returns>
-        public List<AddNote> GetAll(int userId);
+        public List<AddNote> GetAll(int userId, string email);
 
         /// <summary>
         /// List all the Trash Notes from the table
@@ -36,12 +36,7 @@ namespace BussinessLayer.IFundooBussiness
         /// </summary>
         /// <param name="NoteId"></param>
         public void Archive(int NotesId);
-        /// <summary>
-        ///Model Delete Note 
-        /// </summary>
-        /// <param name="notesId"></param>
-        /// <returns></returns>
-
+       
         /// <summary>
         /// List all the Trash Notes from the table
         /// </summary>
@@ -53,6 +48,18 @@ namespace BussinessLayer.IFundooBussiness
         /// <param name="notesId"></param>
         /// <returns></returns>
         public bool DeleteNote(int notesId);
+        /// <summary>
+        /// Update Note 
+        /// </summary>
+        /// <param name="note"></param>
+        public void UpdateNotes(UpdateNote note, int NotesId, string email);
+
+        /// <summary>
+        /// Method declaration to pin and unpin to note
+        /// </summary>
+        /// <param name="id">note id</param>
+        /// <returns>string message</returns>
+        public string PinOrUnpinNote(int NotesId);
     }
 }
 

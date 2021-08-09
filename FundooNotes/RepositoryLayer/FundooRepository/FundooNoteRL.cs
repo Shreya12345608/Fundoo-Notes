@@ -45,12 +45,13 @@ namespace RepositoryLayer.FundooRepository
                 UserAccountDetails user = new UserAccountDetails();
                 //getting userid by using linq
                 user = fundooContext.FondooNotes.FirstOrDefault(usr => usr.Userid == userId);
+
                 note.UserAccount = user;
+                note.Email = user.UserEmail;
                 if (notes.Title != null || notes.Description != null)
                 {
                     //adding content in table
                     fundooContext.NotesDB.Add(note);
-                    //saving data
                     fundooContext.SaveChanges();
                     return true;
                 }
@@ -68,16 +69,17 @@ namespace RepositoryLayer.FundooRepository
         /// list all the notes From the table
         /// </summary>
         /// <returns></returns>
-        public List<AddNote> GetAll(int userId)
+        public List<AddNote> GetAll(int userId,string email)
         {
             try
             {
-                List<NotesModel> notes = fundooContext.NotesDB.ToList().FindAll(note => note.IsArchive == false && note.IsTrash == false);
+                List<NotesModel> notes = fundooContext.NotesDB.ToList().FindAll(note => note.IsArchive == false && note.Email == email && note.IsTrash == false);
                 List<AddNote> list = new List<AddNote>();
-
                 foreach (var addNotes in notes)
                 {
                     AddNote addNote = new AddNote();
+
+                    addNote.NotesId = addNotes.NotesId;
                     addNote.Title = addNotes.Title;
                     addNote.Description = addNotes.Description;
                     addNote.Reminder = addNotes.Reminder;
@@ -109,7 +111,7 @@ namespace RepositoryLayer.FundooRepository
         {
             try
             {
-                var trash = fundooContext.NotesDB.Where(x => x.IsTrash == true && x.UserAccount.Userid == userId).ToList();
+                var trash = fundooContext.NotesDB.Where(x => x.IsTrash == true).ToList();
                 if (trash.Count != 0)
                 {
                     return trash;
@@ -139,6 +141,7 @@ namespace RepositoryLayer.FundooRepository
                     if (result.IsTrash == false)
                     {
                         result.IsTrash = true;
+
                         this.fundooContext.SaveChanges();
                     }
                     else
@@ -192,7 +195,7 @@ namespace RepositoryLayer.FundooRepository
         {
             try
             {
-                var Archive = fundooContext.NotesDB.Where(x => x.IsArchive == true && x.UserAccount.Userid == userId).ToList();
+                var Archive = fundooContext.NotesDB.Where(x => x.IsArchive == false && x.UserAccount.Userid == userId).ToList();
                 if (Archive.Count != 0)
                 {
                     return Archive;
@@ -226,6 +229,44 @@ namespace RepositoryLayer.FundooRepository
                     fundooContext.SaveChanges();
                     return true;
                 }
+            }
+            catch
+            {
+
+                throw;
+            }
+        }
+      
+        /// <summary>
+        /// Method to Pin Or Unpin the Note 
+        /// </summary>
+        /// <param name="NotesId">note id</param>
+        /// <returns>string message</returns>
+        public string PinOrUnpinNote(int NotesId)
+        {
+            try
+            {
+                string message;
+                var note = fundooContext.NotesDB.FirstOrDefault(pin => pin.NotesId == NotesId);
+                if (note != null)
+                {
+                    if (note.IsPin == false)
+                    {
+                        note.IsPin = true;
+                        this.fundooContext.SaveChanges();
+                        message = "Note Pinned";
+                        return message;
+                    }
+                    if (note.IsPin == true)
+                    {
+                        note.IsPin = false;
+                        this.fundooContext.SaveChanges();
+                        message = "Note Unpinned";
+                        return message;
+                    }
+                }
+
+                return message = "Unable to pin or unpin note.";
             }
             catch
             {

@@ -16,7 +16,7 @@ namespace RepositoryLayer.IFundooRepository
         /// List all the Notes from the table
         /// </summary>
         /// <returns></returns>
-        public List<AddNote> GetAll(int userId);
+        public List<AddNote> GetAll(int userId, string email);
 
         /// <summary>
         /// Method Declaration to Trash or Restore a note
@@ -48,7 +48,16 @@ namespace RepositoryLayer.IFundooRepository
         /// <param name="notesId"></param>
         /// <returns></returns>
        public bool DeleteNote(int NotesId);
-
-
+        /// <summary>
+        /// Update Note 
+        /// </summary>
+        /// <param name="note"></param>
+        public void UpdateNotes(UpdateNote note, int NotesId, string email);
+        /// <summary>
+        /// Method declaration to pin and unpin to note
+        /// </summary>
+        /// <param name="id">note id</param>
+        /// <returns>string message</returns>
+        public string PinOrUnpinNote(int NotesId);
     }
 }

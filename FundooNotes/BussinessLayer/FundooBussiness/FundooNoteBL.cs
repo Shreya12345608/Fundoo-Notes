@@ -44,19 +44,19 @@ namespace BussinessLayer.FundooBussiness
         /// Method List all the Notes From the DB
         /// </summary>
         /// <returns></returns>
-        public List<AddNote> GetAll(int userId)
+        public List<AddNote> GetAll(int userId,string email)
         {
             try
             {
-                return this.fundooNoteRL.GetAll(userId);
+                return this.fundooNoteRL.GetAll(userId,email);
             }
-            catch 
+            catch
             {
 
                 throw;
             }
         }
-       
+
         /// <summary>
         ///  Method to Trash 
         /// </summary>
@@ -137,6 +137,25 @@ namespace BussinessLayer.FundooBussiness
             try
             {
                 return this.fundooNoteRL.GetAllArchive(userId);
+            }
+            catch
+            {
+
+                throw;
+            }
+        }
+       
+        /// <summary>
+        /// Method to Call PinOrUnpinNote() method to Pin Or Unpin a Note 
+        /// </summary>
+        /// <param name="id">note id</param>
+        /// <returns>string message</returns>
+        public string PinOrUnpinNote(int NotesId)
+        {
+            try
+            {
+                var note = this.fundooNoteRL.PinOrUnpinNote(NotesId);
+                return note;
             }
             catch
             {

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace FundooNotes.Controllers
@@ -65,13 +66,29 @@ namespace FundooNotes.Controllers
             return Convert.ToInt32(User.FindFirst(x => x.Type == "userid").Value);
         }
 
+        /// <summary>
+        /// Get Email from Token
+        /// </summary>
+        /// <returns></returns>
+        private string GetIdFromTokenEmail()
+        {
+            return User.FindFirst(x => x.Type == ClaimTypes.Email).Value;
+            //getting user details from token
+            //ClaimsPrincipal principal = HttpContext.User as ClaimsPrincipal;
+            //string userEmail = principal.Claims.FirstOrDefault(user => user.Type == ClaimTypes.Email).Value;
+            //return userEmail;
+        }
+
+     
+
         [HttpGet]
         public ActionResult GetAll()
         {
             try
             {
                 int userId = GetIdFromToken();
-                var fundoos = fundooNoteBL.GetAll(userId);
+                string email = GetIdFromTokenEmail();
+                var fundoos = fundooNoteBL.GetAll(userId,email);
                 if (fundoos != null)
                 {
                     return this.Ok(new { Success = true, Message = "Get Note SuccessFull", Data = fundoos });
@@ -200,5 +217,27 @@ namespace FundooNotes.Controllers
             }
 
         }
+
+      
+        [HttpPut]
+        [Route("pin")]
+        public IActionResult PinOrUnpinNote(int NoteId)
+        {
+            try
+            {
+                var pin = this.fundooNoteBL.PinOrUnpinNote(NoteId);
+                if (pin != null)
+                {
+                    return this.Ok(new { Success = true, Message = "Note has been Pinned", Data = pin });
+                }
+
+                return this.BadRequest(new{ Status = false, Message = " No Note  Found" });
+            }
+            catch (Exception ex)
+            {
+                return this.NotFound(new{ Status = false, Message = ex.Message });
+            }
+        }
+
     }
 }

@@ -59,8 +59,6 @@ namespace RepositoryLayer.FundooRepository.MSMQUtility
                 mesg.Formatter = new BinaryMessageFormatter();
                 // mesg.Formatter = new XmlMessageFormatter(new string[] { "System.String, mscorlib" });
                 string data = mesg.Body.ToString();
-                // Process the logic be sending the message
-                string mailSubject = "Link to reset your FundooNotes App Credentials";
                  using (MailMessage mailMessage = new MailMessage("malviyashreya26@gmail.com", "indirashahi144@gmail.com"))
                // using (MailMessage mailMessage = new MailMessage())
                 {

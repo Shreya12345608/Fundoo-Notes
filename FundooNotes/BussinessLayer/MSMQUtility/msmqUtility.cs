@@ -32,7 +32,6 @@ namespace RepositoryLayer.FundooRepository.MSMQUtility
 
         //}
         MessageQueue msmqQueue = new MessageQueue();
-             private string mailSubject;
 
         /// <summary>
         /// method for send message
