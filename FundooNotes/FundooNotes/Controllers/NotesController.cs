@@ -218,7 +218,27 @@ namespace FundooNotes.Controllers
 
         }
 
-      
+        [HttpPut]
+        [Route("updateNote")]
+        public ActionResult UpdateNotes(UpdateNote note, int NotesId)
+        {
+            try
+            {
+
+                string email = GetIdFromTokenEmail();
+                this.fundooNoteBL.UpdateNotes(note,NotesId,email);
+                return Ok(new { Success = true, Message = "Note Updated Successfully", data = note });
+            }
+            catch (Exception ex)
+            {
+
+                return this.BadRequest(new
+                {
+                    Success = false,
+                    Message = ex.Message
+                });
+            }
+        }
         [HttpPut]
         [Route("pin")]
         public IActionResult PinOrUnpinNote(int NoteId)

@@ -144,7 +144,23 @@ namespace BussinessLayer.FundooBussiness
                 throw;
             }
         }
-       
+        /// <summary>
+        /// update note
+        /// </summary>
+        /// <param name="note"></param>
+        public void UpdateNotes(UpdateNote note, int NotesId, string email)
+        {
+            try
+            {
+                this.fundooNoteRL.UpdateNotes(note,NotesId,email);
+
+            }
+            catch
+            {
+
+                throw;
+            }
+        }
         /// <summary>
         /// Method to Call PinOrUnpinNote() method to Pin Or Unpin a Note 
         /// </summary>

@@ -236,7 +236,33 @@ namespace RepositoryLayer.FundooRepository
                 throw;
             }
         }
-      
+        /// <summary>
+        /// Update Note
+        /// </summary>
+        /// <param name="note"></param>
+        public void UpdateNotes(UpdateNote note, int NotesId,string email)
+        {
+            try
+            {
+                var result = fundooContext.NotesDB.FirstOrDefault(unote => unote.NotesId == NotesId && unote.Email == email && unote.IsTrash == false);
+                if (result == null)
+                {
+                    throw new Exception("No such note exits");
+                }
+                else
+                {
+                    result.Title = note.Title;
+                    result.ModifiedDate = DateTime.Parse(DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss"));
+                    result.Description = note.Description;
+                    fundooContext.SaveChanges();
+                }
+            }
+            catch
+            {
+
+                throw;
+            }
+        }
         /// <summary>
         /// Method to Pin Or Unpin the Note 
         /// </summary>
