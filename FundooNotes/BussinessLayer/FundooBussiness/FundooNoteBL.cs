@@ -79,11 +79,11 @@ namespace BussinessLayer.FundooBussiness
         /// Method for get all trash 
         /// </summary>
         /// <returns></returns>
-        public List<NotesModel> GetAllTrash(int userId)
+        public List<AddNote> GetAllTrash(string email)
         {
             try
             {
-                return this.fundooNoteRL.GetAllTrash(userId);
+                return this.fundooNoteRL.GetAllTrash(email);
             }
             catch
             {
@@ -115,11 +115,11 @@ namespace BussinessLayer.FundooBussiness
         /// </summary>
         /// <param name="NotesId"></param>
         /// <returns></returns>
-        public bool DeleteNote(int NotesId)
+        public bool DeleteNote(int notesId, string email)
         {
             try
             {
-                return this.fundooNoteRL.DeleteNote(NotesId);
+                return this.fundooNoteRL.DeleteNote(notesId,email);
             }
             catch
             {
@@ -132,11 +132,11 @@ namespace BussinessLayer.FundooBussiness
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public List<NotesModel> GetAllArchive(int userId)
+        public List<AddNote> GetAllArchive( string email)
         {
             try
             {
-                return this.fundooNoteRL.GetAllArchive(userId);
+                return this.fundooNoteRL.GetAllArchive(email);
             }
             catch
             {
@@ -166,11 +166,11 @@ namespace BussinessLayer.FundooBussiness
         /// </summary>
         /// <param name="id">note id</param>
         /// <returns>string message</returns>
-        public string PinOrUnpinNote(int NotesId)
+        public string PinOrUnpinNote(int NotesId,string email)
         {
             try
             {
-                var note = this.fundooNoteRL.PinOrUnpinNote(NotesId);
+                var note = this.fundooNoteRL.PinOrUnpinNote(NotesId,email);
                 return note;
             }
             catch

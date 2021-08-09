@@ -4,10 +4,15 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
+using RepositoryLayer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace FundooNotes.Controllers
@@ -21,13 +26,18 @@ namespace FundooNotes.Controllers
         /// instance variable of IFundooNoteBL
         /// </summary>
         IFundooNoteBL fundooNoteBL;
+        private readonly FundooContext context;
+        private readonly IDistributedCache distributedCache;
+
         /// <summary>
         /// Constructor of NoteController
         /// </summary>
         /// <param name="fundooNoteBL"></param>
-        public NotesController(IFundooNoteBL fundooNoteBL)
+        public NotesController(IFundooNoteBL fundooNoteBL, FundooContext context, IDistributedCache distributedCache)
         {
             this.fundooNoteBL = fundooNoteBL;
+            this.context = context;
+            this.distributedCache = distributedCache;
 
         }
         /// <summary>
@@ -86,6 +96,7 @@ namespace FundooNotes.Controllers
         {
             try
             {
+
                 int userId = GetIdFromToken();
                 string email = GetIdFromTokenEmail();
                 var fundoos = fundooNoteBL.GetAll(userId,email);
@@ -94,6 +105,42 @@ namespace FundooNotes.Controllers
                     return this.Ok(new { Success = true, Message = "Get Note SuccessFull", Data = fundoos });
                 }
                 return this.BadRequest(new { Success = false, Message = "NO Notes To  be Display" });
+            }
+            catch (Exception ex)
+            {
+
+                return this.BadRequest(new { Success = false, Message = ex.Message, StackTrace = ex.StackTrace });
+            }
+        }
+
+        [HttpGet("redis")]
+        public async Task<IActionResult> GetAllNoteUsingRedisCache()
+        {
+            try
+            {
+                var cacheKey = "fundoosList";
+                string serializedFundooList;
+                var fundoosList = new List<AddNote>();
+                var redisFundooList = await distributedCache.GetAsync(cacheKey);
+                if (redisFundooList != null)
+                {
+                    serializedFundooList = Encoding.UTF8.GetString(redisFundooList);
+                    fundoosList = JsonConvert.DeserializeObject<List<AddNote>>(serializedFundooList);
+                }
+                else
+                {
+                    int userId = GetIdFromToken();
+                    string email = GetIdFromTokenEmail();
+                    fundoosList = fundooNoteBL.GetAll(userId, email);
+                    // customerList = await context.NotesDB.ToListAsync();
+                    serializedFundooList = JsonConvert.SerializeObject(fundoosList);
+                    redisFundooList = Encoding.UTF8.GetBytes(serializedFundooList);
+                    var options = new DistributedCacheEntryOptions()
+                        .SetAbsoluteExpiration(DateTime.Now.AddMinutes(10))
+                        .SetSlidingExpiration(TimeSpan.FromMinutes(2));
+                    await distributedCache.SetAsync(cacheKey, redisFundooList, options);
+                }
+                return Ok(fundoosList);
             }
             catch (Exception ex)
             {
@@ -132,8 +179,9 @@ namespace FundooNotes.Controllers
         {
             try
             {
-                int userId = GetIdFromToken();
-                var trash = fundooNoteBL.GetAllTrash(userId);
+               
+                string email = GetIdFromTokenEmail();
+                var trash = fundooNoteBL.GetAllTrash(email);
                 if (trash != null)
                 {
 
@@ -178,8 +226,8 @@ namespace FundooNotes.Controllers
         {
             try
             {
-                int userId = GetIdFromToken();
-                var archive = fundooNoteBL.GetAllArchive(userId);
+                string email = GetIdFromTokenEmail();
+                var archive = fundooNoteBL.GetAllArchive(email);
                 if (archive != null)
                 {
                     return this.Ok(new { Success = true, Message = "Archive Notes retrieved Successfully", Data = archive });
@@ -198,7 +246,8 @@ namespace FundooNotes.Controllers
         {
             try
             {
-                var delete = fundooNoteBL.DeleteNote(notesId);
+                string email = GetIdFromTokenEmail();
+                var delete = fundooNoteBL.DeleteNote(notesId,email);
                 if (delete == true)
                 {
                     return this.Ok(new { Success = true, Message = "Notes detete Successfully", Data = delete });
@@ -245,10 +294,11 @@ namespace FundooNotes.Controllers
         {
             try
             {
-                var pin = this.fundooNoteBL.PinOrUnpinNote(NoteId);
+                string email = GetIdFromTokenEmail();
+                var pin = this.fundooNoteBL.PinOrUnpinNote(NoteId,email);
                 if (pin != null)
                 {
-                    return this.Ok(new { Success = true, Message = "Note has been Pinned", Data = pin });
+                    return this.Ok(new { Success = true, Data = pin });
                 }
 
                 return this.BadRequest(new{ Status = false, Message = " No Note  Found" });
