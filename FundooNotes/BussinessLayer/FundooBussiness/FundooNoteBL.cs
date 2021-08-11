@@ -44,11 +44,11 @@ namespace BussinessLayer.FundooBussiness
         /// Method List all the Notes From the DB
         /// </summary>
         /// <returns></returns>
-        public List<AddNote> GetAll(int userId,string email)
+        public List<AddNote> GetAll(int userId, string email)
         {
             try
             {
-                return this.fundooNoteRL.GetAll(userId,email);
+                return this.fundooNoteRL.GetAll(userId, email);
             }
             catch
             {
@@ -119,7 +119,7 @@ namespace BussinessLayer.FundooBussiness
         {
             try
             {
-                return this.fundooNoteRL.DeleteNote(notesId,email);
+                return this.fundooNoteRL.DeleteNote(notesId, email);
             }
             catch
             {
@@ -132,7 +132,7 @@ namespace BussinessLayer.FundooBussiness
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public List<AddNote> GetAllArchive( string email)
+        public List<AddNote> GetAllArchive(string email)
         {
             try
             {
@@ -152,7 +152,7 @@ namespace BussinessLayer.FundooBussiness
         {
             try
             {
-                this.fundooNoteRL.UpdateNotes(note,NotesId,email);
+                this.fundooNoteRL.UpdateNotes(note, NotesId, email);
 
             }
             catch
@@ -166,11 +166,11 @@ namespace BussinessLayer.FundooBussiness
         /// </summary>
         /// <param name="id">note id</param>
         /// <returns>string message</returns>
-        public string PinOrUnpinNote(int NotesId,string email)
+        public string PinOrUnpinNote(int NotesId, string email)
         {
             try
             {
-                var note = this.fundooNoteRL.PinOrUnpinNote(NotesId,email);
+                var note = this.fundooNoteRL.PinOrUnpinNote(NotesId, email);
                 return note;
             }
             catch
@@ -179,6 +179,56 @@ namespace BussinessLayer.FundooBussiness
                 throw;
             }
         }
-    }
+        public string AddColour(int NotesId, string color, string email)
+        {
+            try
+            {
+                var note = this.fundooNoteRL.AddColour(NotesId, color, email);
+                return note;
+            }
+            catch
+            {
 
+                throw;
+            }
+        }
+        /// <summary>
+        /// Create Label
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <param name="LabelName"></param>
+        /// <returns></returns>
+        public LabelResponse CreateLabel(int userID, string LabelName)
+        {
+            try
+            {
+                LabelResponse responseData = fundooNoteRL.CreateLabel(userID, LabelName);
+                return responseData;
+            }
+            catch
+            {
+
+                throw;
+            }
+        }
+
+        /// <summary>
+        ///Method for Delete Label 
+        /// </summary>
+        /// <param name="LabelId"></param>
+        /// <returns></returns>
+        public bool DeleteLabel(int LabelId)
+        {
+            try
+            {
+                return this.fundooNoteRL.DeleteLabel(LabelId);
+            }
+            catch
+            {
+
+                throw;
+            }
+        }
+     
+    }
 }

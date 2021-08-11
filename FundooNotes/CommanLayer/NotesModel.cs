@@ -55,6 +55,15 @@ namespace CommanLayer
         public DateTime? CreatedDate { get; set; }
 
         /// <summary>
+        /// Gets or sets the reminder.
+        /// </summary>
+        /// <value>
+        /// The reminder.
+        /// </value>
+        [Column("Reminder", TypeName = "datetime2")]
+
+        public DateTime? Reminder { get; set; }
+        /// <summary>
         /// Gets or sets the modified date.
         /// </summary>
         /// <value>
@@ -62,13 +71,7 @@ namespace CommanLayer
         /// </value>
         public DateTime? ModifiedDate { get; set; }
 
-        /// <summary>
-        /// Gets or sets the reminder.
-        /// </summary>
-        /// <value>
-        /// The reminder.
-        /// </value>
-        public string Reminder { get; set; }
+        
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance is archive.

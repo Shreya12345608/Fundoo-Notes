@@ -28,6 +28,7 @@ namespace FundooNotes.Controllers
         IFundooNoteBL fundooNoteBL;
         private readonly FundooContext context;
         private readonly IDistributedCache distributedCache;
+        private readonly string cacheKey = "fundoosList";
 
         /// <summary>
         /// Constructor of NoteController
@@ -89,7 +90,7 @@ namespace FundooNotes.Controllers
             //return userEmail;
         }
 
-     
+
 
         [HttpGet]
         public ActionResult GetAll()
@@ -99,7 +100,7 @@ namespace FundooNotes.Controllers
 
                 int userId = GetIdFromToken();
                 string email = GetIdFromTokenEmail();
-                var fundoos = fundooNoteBL.GetAll(userId,email);
+                var fundoos = fundooNoteBL.GetAll(userId, email);
                 if (fundoos != null)
                 {
                     return this.Ok(new { Success = true, Message = "Get Note SuccessFull", Data = fundoos });
@@ -118,7 +119,7 @@ namespace FundooNotes.Controllers
         {
             try
             {
-                var cacheKey = "fundoosList";
+                //var cacheKey = "fundoosList";
                 string serializedFundooList;
                 var fundoosList = new List<AddNote>();
                 var redisFundooList = await distributedCache.GetAsync(cacheKey);
@@ -179,11 +180,13 @@ namespace FundooNotes.Controllers
         {
             try
             {
-               
+
                 string email = GetIdFromTokenEmail();
                 var trash = fundooNoteBL.GetAllTrash(email);
+
                 if (trash != null)
                 {
+                    distributedCache.Remove(cacheKey);
 
                     return this.Ok(new { Success = true, Message = "Trash Notes retrieved Successfully", Data = trash });
                 }
@@ -230,6 +233,7 @@ namespace FundooNotes.Controllers
                 var archive = fundooNoteBL.GetAllArchive(email);
                 if (archive != null)
                 {
+                    distributedCache.Remove(cacheKey);
                     return this.Ok(new { Success = true, Message = "Archive Notes retrieved Successfully", Data = archive });
                 }
                 return this.BadRequest(new { Success = false, Message = "Unable to retrieve Archive notes." });
@@ -247,9 +251,10 @@ namespace FundooNotes.Controllers
             try
             {
                 string email = GetIdFromTokenEmail();
-                var delete = fundooNoteBL.DeleteNote(notesId,email);
+                var delete = fundooNoteBL.DeleteNote(notesId, email);
                 if (delete == true)
                 {
+                    distributedCache.Remove(cacheKey);
                     return this.Ok(new { Success = true, Message = "Notes detete Successfully", Data = delete });
                 }
                 return this.BadRequest(new { Success = false, Message = "Unable to retrieve Delete notes." });
@@ -273,9 +278,9 @@ namespace FundooNotes.Controllers
         {
             try
             {
-
                 string email = GetIdFromTokenEmail();
-                this.fundooNoteBL.UpdateNotes(note,NotesId,email);
+                this.fundooNoteBL.UpdateNotes(note, NotesId, email);
+                distributedCache.Remove(cacheKey);
                 return Ok(new { Success = true, Message = "Note Updated Successfully", data = note });
             }
             catch (Exception ex)
@@ -284,7 +289,8 @@ namespace FundooNotes.Controllers
                 return this.BadRequest(new
                 {
                     Success = false,
-                    Message = ex.Message
+                    Message = ex.Message,
+                    StackTrace = ex.StackTrace
                 });
             }
         }
@@ -295,19 +301,79 @@ namespace FundooNotes.Controllers
             try
             {
                 string email = GetIdFromTokenEmail();
-                var pin = this.fundooNoteBL.PinOrUnpinNote(NoteId,email);
+                var pin = this.fundooNoteBL.PinOrUnpinNote(NoteId, email);
                 if (pin != null)
                 {
                     return this.Ok(new { Success = true, Data = pin });
                 }
 
-                return this.BadRequest(new{ Status = false, Message = " No Note  Found" });
+                return this.BadRequest(new { Status = false, Message = " No Note  Found" });
             }
             catch (Exception ex)
             {
-                return this.NotFound(new{ Status = false, Message = ex.Message });
+                return this.NotFound(new { Status = false, Message = ex.Message, StackTrace = ex.StackTrace });
             }
         }
 
+        /// <summary>
+        /// Adds the color.
+        /// </summary>
+        /// <param name="NoteId">note id</param>
+        /// <param name="color">The color</param>
+        /// <returns>response data</returns>
+        [HttpPut]
+        [Route("addColor")]
+        public IActionResult AddColor(int NoteId, string color)
+        {
+            try
+            {
+                string email = GetIdFromTokenEmail();
+                var result = this.fundooNoteBL.AddColour(NoteId, color, email);
+                if (result != null)
+                {
+                    return this.Ok(new { Status = true, Message = "Add Colour Sucessfully", Data = color });
+                }
+
+                return this.BadRequest(new { Status = false, Message = result });
+            }
+            catch (Exception ex)
+            {
+                return this.NotFound(new { Status = false, Message = ex.Message, StackTrace = ex.StackTrace });
+            }
+        }
+
+        /// <summary>
+        /// Controller method to Create lable
+        /// </summary>
+        /// <param name="lable">lable name</param>
+        /// <returns>API response</returns>
+        [HttpPost]
+        [Route("CreateLabel")]
+        public IActionResult CreateLabel(string LabelName)
+        {
+            try
+            {
+                int userId = GetIdFromToken();
+                LabelResponse result = fundooNoteBL.CreateLabel(userId, LabelName);
+                bool success = false;
+                string message;
+                if (result == null)
+                {
+                    message = "Try again";
+                    return Ok(new { success, message });
+                }
+                else
+                {
+                    success = true;
+                    message = "Label Created Successfully";
+                    return Ok(new { success, message, result });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+        }
+       
     }
 }

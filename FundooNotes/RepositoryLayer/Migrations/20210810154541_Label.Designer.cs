@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RepositoryLayer;
 
 namespace RepositoryLayer.Migrations
 {
     [DbContext(typeof(FundooContext))]
-    partial class FundooContextModelSnapshot : ModelSnapshot
+    [Migration("20210810154541_Label")]
+    partial class Label
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -27,16 +29,20 @@ namespace RepositoryLayer.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Label")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Userid")
+                    b.Property<int>("NotesId")
+                        .HasColumnType("int");
+
+                    b.Property<long>("NotesId1")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("Userid")
                         .HasColumnType("int");
 
                     b.HasKey("LabelId");
 
-                    b.HasIndex("Label")
-                        .IsUnique()
-                        .HasFilter("[Label] IS NOT NULL");
+                    b.HasIndex("NotesId1");
 
                     b.HasIndex("Userid");
 
@@ -126,9 +132,19 @@ namespace RepositoryLayer.Migrations
 
             modelBuilder.Entity("CommanLayer.LabelModel", b =>
                 {
+                    b.HasOne("CommanLayer.NotesModel", "Notes")
+                        .WithMany()
+                        .HasForeignKey("NotesId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("CommanLayer.UserAccountDetails", "User")
                         .WithMany()
-                        .HasForeignKey("Userid");
+                        .HasForeignKey("Userid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Notes");
 
                     b.Navigation("User");
                 });

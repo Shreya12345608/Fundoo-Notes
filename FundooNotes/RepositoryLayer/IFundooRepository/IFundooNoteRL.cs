@@ -60,5 +60,23 @@ namespace RepositoryLayer.IFundooRepository
         /// <param name="email">user email</param>
         /// <returns></returns>
         public string PinOrUnpinNote(int NotesId, string email);
+        /// <summary>
+        /// Adds the colour.
+        /// </summary>
+        /// <param name="NotesId">note id.</param>
+        /// <param name="color">The color.</param>
+        /// <returns>return true or false</returns>
+        public string AddColour(int NotesId, string color, string email);
+
+        /// <summary>
+        /// create a label
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <param name="LabelName "></param>
+        /// <returns></returns>
+        LabelResponse CreateLabel(int userID, string LabelName);
+
+       
+
     }
 }

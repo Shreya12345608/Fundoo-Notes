@@ -3,45 +3,23 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RepositoryLayer;
 
 namespace RepositoryLayer.Migrations
 {
     [DbContext(typeof(FundooContext))]
-    partial class FundooContextModelSnapshot : ModelSnapshot
+    [Migration("20210810134157_M5")]
+    partial class M5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.8")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("CommanLayer.LabelModel", b =>
-                {
-                    b.Property<int>("LabelId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Label")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int?>("Userid")
-                        .HasColumnType("int");
-
-                    b.HasKey("LabelId");
-
-                    b.HasIndex("Label")
-                        .IsUnique()
-                        .HasFilter("[Label] IS NOT NULL");
-
-                    b.HasIndex("Userid");
-
-                    b.ToTable("Label");
-                });
 
             modelBuilder.Entity("CommanLayer.NotesModel", b =>
                 {
@@ -122,15 +100,6 @@ namespace RepositoryLayer.Migrations
                         .IsUnique();
 
                     b.ToTable("FondooNotes");
-                });
-
-            modelBuilder.Entity("CommanLayer.LabelModel", b =>
-                {
-                    b.HasOne("CommanLayer.UserAccountDetails", "User")
-                        .WithMany()
-                        .HasForeignKey("Userid");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("CommanLayer.NotesModel", b =>

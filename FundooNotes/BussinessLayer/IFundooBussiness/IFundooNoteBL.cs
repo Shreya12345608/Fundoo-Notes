@@ -22,7 +22,7 @@ namespace BussinessLayer.IFundooBussiness
         /// List all the Trash Notes from the table
         /// </summary>
         /// <returns></returns>
-        public List<AddNote> GetAllTrash( string email);
+        public List<AddNote> GetAllTrash(string email);
 
         /// <summary>
         /// Method Declaration to Trash or Restore a note
@@ -36,12 +36,12 @@ namespace BussinessLayer.IFundooBussiness
         /// </summary>
         /// <param name="NoteId"></param>
         public void Archive(int NotesId);
-       
+
         /// <summary>
         /// List all the Trash Notes from the table
         /// </summary>
         /// <returns></returns>
-        public List<AddNote> GetAllArchive( string email);
+        public List<AddNote> GetAllArchive(string email);
         /// <summary>
         ///Model Delete Note 
         /// </summary>
@@ -61,6 +61,24 @@ namespace BussinessLayer.IFundooBussiness
         /// <param name="email">user email</param>
         /// <returns></returns>
         public string PinOrUnpinNote(int NotesId, string email);
+
+        /// <summary>
+        /// Adds the colour.
+        /// </summary>
+        /// <param name="NotesId">note id.</param>
+        /// <param name="color">The color.</param>
+        /// <returns>return true or false</returns>
+        public string AddColour(int NotesId, string color, string email);
+
+        /// <summary>
+        /// create a label
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <param name="LabelName "></param>
+        /// <returns></returns>
+        LabelResponse CreateLabel(int userID, string LabelName);
+        
+
     }
 }
 

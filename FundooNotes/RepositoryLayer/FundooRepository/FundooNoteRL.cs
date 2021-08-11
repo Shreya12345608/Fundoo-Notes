@@ -34,7 +34,7 @@ namespace RepositoryLayer.FundooRepository
                     //getting detials of notes to Addnotes
                     Title = notes.Title,
                     Description = notes.Description,
-                    Reminder = notes.Reminder,
+                    //Reminder = DateTime.Parse(DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss")),
                     CreatedDate = DateTime.Parse(DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss")),
                     IsArchive = notes.IsArchive,
                     IsTrash = notes.IsTrash,
@@ -70,11 +70,11 @@ namespace RepositoryLayer.FundooRepository
         /// list all the notes From the table
         /// </summary>
         /// <returns></returns>
-        public List<AddNote> GetAll(int userId,string email)
+        public List<AddNote> GetAll(int userId, string email)
         {
             try
             {
-                List<NotesModel> notes = fundooContext.NotesDB.Include(user=>user.UserAccount).ToList().FindAll(note => note.IsArchive == false && note.Email == email && note.IsTrash == false);
+                List<NotesModel> notes = fundooContext.NotesDB.Include(user => user.UserAccount).ToList().FindAll(note => note.IsArchive == false && note.Email == email && note.IsTrash == false);
                 List<AddNote> list = new List<AddNote>();
                 foreach (var addNotes in notes)
                 {
@@ -83,7 +83,7 @@ namespace RepositoryLayer.FundooRepository
                     addNote.NotesId = addNotes.NotesId;
                     addNote.Title = addNotes.Title;
                     addNote.Description = addNotes.Description;
-                    addNote.Reminder = addNotes.Reminder;
+                    //  addNote.Reminder = addNotes.Reminder;
                     addNote.IsArchive = addNotes.IsArchive;
                     addNote.IsTrash = addNotes.IsTrash;
                     addNote.IsPin = addNotes.IsPin;
@@ -114,7 +114,7 @@ namespace RepositoryLayer.FundooRepository
         /// Get all trash
         /// </summary>
         /// <returns></returns>
-        public List<AddNote> GetAllTrash( string email)
+        public List<AddNote> GetAllTrash(string email)
         {
             try
             {
@@ -127,7 +127,7 @@ namespace RepositoryLayer.FundooRepository
                     addNote.NotesId = addNotes.NotesId;
                     addNote.Title = addNotes.Title;
                     addNote.Description = addNotes.Description;
-                    addNote.Reminder = addNotes.Reminder;
+                    //addNote.Reminder = addNotes.Reminder;
                     addNote.IsArchive = addNotes.IsArchive;
                     addNote.IsTrash = addNotes.IsTrash;
                     addNote.IsPin = addNotes.IsPin;
@@ -218,7 +218,7 @@ namespace RepositoryLayer.FundooRepository
         {
             try
             {
-                var Archive = fundooContext.NotesDB.Include(user => user.UserAccount).ToList().FindAll(x => x.IsArchive == false && x.Email == email);
+                var Archive = fundooContext.NotesDB.Include(user => user.UserAccount).ToList().FindAll(x => x.IsArchive == true && x.Email == email && x.IsTrash == false);
                 List<AddNote> list = new List<AddNote>();
                 foreach (var addNotes in Archive)
                 {
@@ -227,7 +227,7 @@ namespace RepositoryLayer.FundooRepository
                     addNote.NotesId = addNotes.NotesId;
                     addNote.Title = addNotes.Title;
                     addNote.Description = addNotes.Description;
-                    addNote.Reminder = addNotes.Reminder;
+                    //addNote.Reminder = addNotes.Reminder;
                     addNote.IsArchive = addNotes.IsArchive;
                     addNote.IsTrash = addNotes.IsTrash;
                     addNote.IsPin = addNotes.IsPin;
@@ -254,7 +254,7 @@ namespace RepositoryLayer.FundooRepository
         /// </summary>
         /// <param name="notesId"></param>
         /// <returns></returns>
-        public bool DeleteNote(int notesId,string email)
+        public bool DeleteNote(int notesId, string email)
         {
             try
             {
@@ -280,7 +280,7 @@ namespace RepositoryLayer.FundooRepository
         /// Update Note
         /// </summary>
         /// <param name="note"></param>
-        public void UpdateNotes(UpdateNote note, int NotesId,string email)
+        public void UpdateNotes(UpdateNote note, int NotesId, string email)
         {
             try
             {
@@ -313,7 +313,7 @@ namespace RepositoryLayer.FundooRepository
             try
             {
                 string message;
-                var note = fundooContext.NotesDB.FirstOrDefault(pin => pin.NotesId == NotesId && pin.Email == email && pin.IsTrash==false && pin.IsArchive==false);
+                var note = fundooContext.NotesDB.FirstOrDefault(pin => pin.NotesId == NotesId && pin.Email == email && pin.IsTrash == false && pin.IsArchive == false);
                 if (note != null)
                 {
                     if (note.IsPin == false)
@@ -342,5 +342,74 @@ namespace RepositoryLayer.FundooRepository
                 throw;
             }
         }
+        /// <summary>
+        /// Adds the colour.
+        /// </summary>
+        /// <param name="noteId">note id.</param>
+        /// <param name="color">The color.</param>
+        /// <returns>return true or false</returns>
+        /// <exception cref="Exception"></exception>
+        public string AddColour(int NotesId, string color, string email)
+        {
+            try
+            {
+                string message;
+                var notes = this.fundooContext.NotesDB.Where(color => color.NotesId == NotesId && color.Email == email && color.IsTrash == false).SingleOrDefault();
+                if (notes != null)
+                {
+                    notes.Color = color;
+                    fundooContext.Entry(notes).State = EntityState.Modified;
+                    fundooContext.SaveChanges();
+                    message = "Color Updated SuccessFully";
+                    return message;
+                }
+                return message = "Unable to Change /Update Color.";
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Create or add label
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <param name="LabelName"></param>
+        /// <returns></returns>
+        public LabelResponse CreateLabel(int userID, string LabelName)
+        {
+            try
+            {
+              
+                LabelModel labelmodel = new LabelModel()
+                {
+                    Label = LabelName
+
+                    
+                };
+                //craeting new object for userAcconutdetails
+                UserAccountDetails user = new UserAccountDetails();
+                //getting userid by using linq
+                user = fundooContext.FondooNotes.FirstOrDefault(usr => usr.Userid == userID);
+                labelmodel.User = user;
+                fundooContext.Label.Add(labelmodel);
+                fundooContext.SaveChanges();
+
+                LabelResponse responseData = new LabelResponse()
+                {
+                    Label = labelmodel.Label
+                    
+                };
+                return responseData;
+            }
+            catch
+            {
+
+                throw;
+            }
+        }
+       
+
     }
 }
