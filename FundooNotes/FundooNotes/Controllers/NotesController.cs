@@ -374,6 +374,30 @@ namespace FundooNotes.Controllers
                 return BadRequest(new { ex.Message });
             }
         }
-       
+        /// <summary>
+        /// Method to delete lable
+        /// </summary>
+        /// <param name="LabelId">lable id</param>
+        /// <returns>API response</returns>
+        [HttpDelete]
+        [Route("RemoveLable")]
+        public IActionResult RemoveLable(int LabelId)
+        {
+            try
+            {
+                var result = this.fundooNoteBL.DeleteLabel(LabelId);
+                if (result == true)
+                {
+                    return this.Ok(new { Status = true, Message = "Lable Deleted Successfully !", Data = LabelId });
+                }
+
+                return this.BadRequest(new { Status = false, Message = "Unable to delete this Lable." });
+            }
+            catch (Exception ex)
+            {
+                return this.NotFound(new { Status = false, Message = ex.Message });
+            }
+        }
+
     }
 }

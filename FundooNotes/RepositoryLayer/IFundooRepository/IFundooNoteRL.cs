@@ -76,7 +76,12 @@ namespace RepositoryLayer.IFundooRepository
         /// <returns></returns>
         LabelResponse CreateLabel(int userID, string LabelName);
 
-       
+        /// <summary>
+        /// Delete label
+        /// </summary>
+        /// <param name="LabelId"></param>
+        /// <returns></returns>
+        public bool DeleteLabel(int LabelId);
 
     }
 }

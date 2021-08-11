@@ -409,7 +409,33 @@ namespace RepositoryLayer.FundooRepository
                 throw;
             }
         }
-       
+        /// <summary>
+        /// Method to Delete Lable
+        /// </summary>
+        /// <param name="LabelId">lable id</param>
+        /// <returns>boolean result</returns>
+        public bool DeleteLabel(int LabelId)
+        {
+            try
+            {
+                bool result;
+                var label = this.fundooContext.Label.Where(x => x.LabelId == LabelId).SingleOrDefault();
+                if (label != null)
+                {
+                    this.fundooContext.Label.Remove(label);
+                    this.fundooContext.SaveChanges();
+                    result = true;
+                    return result;
+                }
+
+                result = false;
+                return result;
+            }
+            catch
+            {
+                throw;
+            }
+        }
 
     }
 }
