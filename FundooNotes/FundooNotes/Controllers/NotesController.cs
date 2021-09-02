@@ -436,6 +436,7 @@ namespace FundooNotes.Controllers
         {
             try
             {
+
                 int userId = GetIdFromToken();
                 var delete = fundooNoteBL.DeleteTrashNotes(userId);
                 if (delete == true)
