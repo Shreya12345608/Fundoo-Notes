@@ -80,7 +80,7 @@ namespace RepositoryLayer.FundooRepository.MSMQUtility
                     //var messageBody = msmqQueue.msmq.receiverMessage();
                     //user = messageBody;
                
-                    string url = $"https://localhost:44361/api/Fundoo/reset-password/{data }";
+                    string url = $"http://localhost:4200/reset-password/{data}";
                     string text = $"<div style='text-align: center'>" +
                   $"<p>Click on following link to reset your credentials for Fundoonotes:</p>" +
                 $"<a href='{url}' style ='color:#f44336'>Click Here To Reset Password</a>" +

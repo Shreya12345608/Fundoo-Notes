@@ -34,8 +34,8 @@ namespace RepositoryLayer.FundooRepository
                     //getting detials of notes to Addnotes
                     Title = notes.Title,
                     Description = notes.Description,
-                    //Reminder = DateTime.Parse(DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss")),
-                    CreatedDate = DateTime.Parse(DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss")),
+                    Reminder = DateTime.Now,
+                    CreatedDate =DateTime.Now,
                     IsArchive = notes.IsArchive,
                     IsTrash = notes.IsTrash,
                     IsPin = notes.IsPin,
@@ -292,7 +292,7 @@ namespace RepositoryLayer.FundooRepository
                 else
                 {
                     result.Title = note.Title;
-                    result.ModifiedDate = DateTime.Parse(DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss"));
+                    result.ModifiedDate = DateTime.Now;
                     result.Description = note.Description;
                     fundooContext.SaveChanges();
                 }
@@ -327,7 +327,7 @@ namespace RepositoryLayer.FundooRepository
                     if (note.IsPin == true)
                     {
                         note.IsPin = false;
-                        note.ModifiedDate = DateTime.Parse(DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss"));
+                        note.ModifiedDate = DateTime.Now;
                         this.fundooContext.SaveChanges();
                         message = "Note Unpinned";
                         return message;
@@ -377,36 +377,32 @@ namespace RepositoryLayer.FundooRepository
         /// <param name="userID"></param>
         /// <param name="LabelName"></param>
         /// <returns></returns>
-        public LabelResponse CreateLabel(int userID, string LabelName)
+        public LabelResponse CreateLabel(int userID, LabelModel LabelName)
         {
             try
             {
-              
+
                 LabelModel labelmodel = new LabelModel()
                 {
-                    Label = LabelName
+                    Label = LabelName.Label,
+                    NoteId = LabelName.NoteId,
+                    UserId = userID
 
-                    
                 };
-                //craeting new object for userAcconutdetails
-                UserAccountDetails user = new UserAccountDetails();
-                //getting userid by using linq
-                user = fundooContext.FondooNotes.FirstOrDefault(usr => usr.Userid == userID);
-                labelmodel.User = user;
                 fundooContext.Label.Add(labelmodel);
                 fundooContext.SaveChanges();
 
                 LabelResponse responseData = new LabelResponse()
                 {
                     Label = labelmodel.Label
-                    
+
                 };
                 return responseData;
             }
-            catch
+            catch (Exception e)
             {
 
-                throw;
+                throw new Exception(e.Message);
             }
         }
         /// <summary>
@@ -414,12 +410,12 @@ namespace RepositoryLayer.FundooRepository
         /// </summary>
         /// <param name="LabelId">lable id</param>
         /// <returns>boolean result</returns>
-        public bool DeleteLabel(int LabelId)
+        public bool DeleteLabel(int userId, int LabelId)
         {
             try
             {
-                bool result;
-                var label = this.fundooContext.Label.Where(x => x.LabelId == LabelId).SingleOrDefault();
+                bool result = false;
+                var label = this.fundooContext.Label.Where(x => x.LabelId == LabelId && x.UserId == userId).SingleOrDefault();
                 if (label != null)
                 {
                     this.fundooContext.Label.Remove(label);
@@ -427,8 +423,6 @@ namespace RepositoryLayer.FundooRepository
                     result = true;
                     return result;
                 }
-
-                result = false;
                 return result;
             }
             catch
@@ -437,5 +431,147 @@ namespace RepositoryLayer.FundooRepository
             }
         }
 
+        /// <summary>
+        /// get all label
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <returns></returns>
+        public IEnumerable<LabelModel> GetAllLabel(int userID)
+        {
+            var result = this.fundooContext.Label.Where<LabelModel>(x => x.UserId == userID);
+            return result;
+        }
+
+
+        /// <summary>
+        /// Create or add label
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <param name="LabelName"></param>
+        /// <returns></returns>
+        public CollaborationModel CreateCollaboration(int userID, CollaborationModel collab)
+        {
+            try
+            {
+
+                CollaborationModel model = new CollaborationModel()
+                {
+                    UserId = userID,
+                    ReceiverMail = collab.ReceiverMail,
+                    NotesId = collab.NotesId
+
+                };
+                fundooContext.Collaboration.Add(model);
+                fundooContext.SaveChanges();
+                return model;
+            }
+            catch (Exception e)
+            {
+
+                throw new Exception(e.Message);
+            }
+        }
+        /// <summary>
+        /// delete callaboration
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="collabId"></param>
+        /// <returns></returns>
+        public bool DeleteCollaboration(int userId, int collabId)
+        {
+            try
+            {
+                bool result = false;
+                var label = this.fundooContext.Collaboration.Where(x => x.CollaborationId == collabId && x.UserId == userId).SingleOrDefault();
+                if (label != null)
+                {
+                    this.fundooContext.Collaboration.Remove(label);
+                    this.fundooContext.SaveChanges();
+                    result = true;
+                    return result;
+                }
+                return result;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        /// <summary>
+        /// get all collaborators
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <returns></returns>
+        public IEnumerable<CollaborationModel> GetAllCollaborators(int userID)
+        {
+            var result = this.fundooContext.Collaboration.Where(x => x.UserId == userID);
+            return result;
+        }
+
+        /// <summary>
+        /// Delete trash Empty
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public bool DeleteTrashNotes(int userId)
+        {
+            try
+            {
+                bool result = false;
+                var label = this.fundooContext.NotesDB.Where(x => x.IsTrash == true && x.UserAccount.Userid == userId).ToList<NotesModel>();
+                if (label != null)
+                {
+                    this.fundooContext.NotesDB.RemoveRange(label);
+                    //foreach(var data in label) 
+                    //{
+                    //    this.fundooContext.NotesDB.Remove(data);
+                    //}
+
+                    this.fundooContext.SaveChanges();
+                    result = true;
+                    return result;
+                }
+                return result;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        ///// <summary>
+        ///// ability to display Reminders notes
+        ///// </summary>
+        ///// <param name="userEmail"></param>
+        ///// <returns></returns>
+        //public List<LabelResponse> ReminderNotes(string userEmail)
+        //{
+        //    List<NotesModel> reminderNotes = fundooContext.NotesDB.Include(user => user.UserAccount).ToList().FindAll(note => note.Email == userEmail && note.isTrash == false && note.Reminder != null);
+
+        //    List<LabelResponse> responseReminderNotes = new List<LabelResponse>();
+        //    foreach (var addNotes in reminderNotes)
+        //    {
+        //        AddNote addNote = new AddNote();
+
+        //        addNote.NotesId = addNotes.NotesId;
+        //        addNote.Title = addNotes.Title;
+        //        addNote.Description = addNotes.Description;
+        //        //addNote.Reminder = addNotes.Reminder;
+        //        addNote.IsArchive = addNotes.IsArchive;
+        //        addNote.IsTrash = addNotes.IsTrash;
+        //        addNote.IsPin = addNotes.IsPin;
+        //        addNote.Color = addNotes.Color;
+        //        addNote.Image = addNotes.Image;
+        //        addNote.userId = addNotes.UserAccount.Userid;
+        //        responseReminderNotes.Add(addNote);
+        //    }
+        //    if (responseReminderNotes.Count != 0)
+        //    {
+        //        return responseReminderNotes;
+        //    }
+        //    return null;
+        //}
+
+
     }
 }
+

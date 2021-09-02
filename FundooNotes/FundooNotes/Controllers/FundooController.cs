@@ -2,6 +2,7 @@
 using CommanLayer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -13,7 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 namespace FundooNotes.Controllers
 {
-
+    [EnableCors()]
     [Route("api/[controller]")]
     [ApiController]
     public class FundooController : ControllerBase
@@ -90,7 +91,7 @@ namespace FundooNotes.Controllers
         /// </summary>
         /// <param name="loginModel"></param>
         /// <returns></returns>
-       // [AllowAnonymous]
+        [AllowAnonymous]
         [HttpPost]
         public ActionResult UserLogin(LoginModel loginModel)
         {

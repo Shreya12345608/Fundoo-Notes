@@ -198,7 +198,7 @@ namespace BussinessLayer.FundooBussiness
         /// <param name="userID"></param>
         /// <param name="LabelName"></param>
         /// <returns></returns>
-        public LabelResponse CreateLabel(int userID, string LabelName)
+        public LabelResponse CreateLabel(int userID, LabelModel LabelName)
         {
             try
             {
@@ -217,11 +217,11 @@ namespace BussinessLayer.FundooBussiness
         /// </summary>
         /// <param name="LabelId"></param>
         /// <returns></returns>
-        public bool DeleteLabel(int LabelId)
+        public bool DeleteLabel(int userID, int LabelId)
         {
             try
             {
-                return this.fundooNoteRL.DeleteLabel(LabelId);
+                return this.fundooNoteRL.DeleteLabel(userID,LabelId);
             }
             catch
             {
@@ -229,6 +229,57 @@ namespace BussinessLayer.FundooBussiness
                 throw;
             }
         }
-     
+        /// <summary>
+        /// get all label
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <returns></returns>
+        public IEnumerable<LabelModel> GetAllLabel(int userID)
+        {
+            try
+            {
+                return this.fundooNoteRL.GetAllLabel(userID);
+            }
+            catch
+            {
+
+                throw;
+            }
+        }
+        /// <summary>
+        /// Delete Trash Note
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public bool DeleteTrashNotes(int userId)
+        {
+            try
+            {
+                 return this.fundooNoteRL.DeleteTrashNotes(userId);
+            }
+            catch
+            {
+
+                throw;
+            }
+        }
+        /// <summary>
+        /// Create Collaboration
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <param name="collab"></param>
+        /// <returns></returns>
+        public CollaborationModel CreateCollaboration(int userID, CollaborationModel collab)
+        {
+            try
+            {
+                return this.fundooNoteRL.CreateCollaboration(userID, collab);
+            }
+            catch
+            {
+
+                throw;
+            }
+        }
     }
 }

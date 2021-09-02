@@ -31,5 +31,8 @@ namespace RepositoryLayer
 
         public DbSet<LabelModel> Label { get; set; }
 
+        public DbSet<CollaborationModel> Collaboration { get; set; }
+
+
     }
 }

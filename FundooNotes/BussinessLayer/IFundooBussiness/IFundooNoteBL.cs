@@ -76,13 +76,33 @@ namespace BussinessLayer.IFundooBussiness
         /// <param name="userID"></param>
         /// <param name="LabelName "></param>
         /// <returns></returns>
-        LabelResponse CreateLabel(int userID, string LabelName);
+        LabelResponse CreateLabel(int userID, LabelModel LabelName);
         /// <summary>
         /// Delete label
         /// </summary>
         /// <param name="LabelId"></param>
         /// <returns></returns>
-        public bool DeleteLabel(int LabelId);
+        public bool DeleteLabel(int userID, int LabelId);
+        /// <summary>
+        /// Get all label
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <returns></returns>
+        public IEnumerable<LabelModel> GetAllLabel(int userID);
+
+        // <summary>
+        /// Create Collaboration
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <param name="collab"></param>
+        /// <returns></returns>
+        public CollaborationModel CreateCollaboration(int userID, CollaborationModel collab);
+        /// <summary>
+        /// delete all notes
+        /// </summary>
+        /// <param name="userId">userid</param>
+        /// <returns></returns>
+        public bool DeleteTrashNotes(int userId);
 
     }
 }

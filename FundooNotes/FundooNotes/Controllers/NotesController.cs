@@ -186,7 +186,7 @@ namespace FundooNotes.Controllers
 
                 if (trash != null)
                 {
-                    distributedCache.Remove(cacheKey);
+                  //  distributedCache.Remove(cacheKey);
 
                     return this.Ok(new { Success = true, Message = "Trash Notes retrieved Successfully", Data = trash });
                 }
@@ -233,7 +233,7 @@ namespace FundooNotes.Controllers
                 var archive = fundooNoteBL.GetAllArchive(email);
                 if (archive != null)
                 {
-                    distributedCache.Remove(cacheKey);
+                   // distributedCache.Remove(cacheKey);
                     return this.Ok(new { Success = true, Message = "Archive Notes retrieved Successfully", Data = archive });
                 }
                 return this.BadRequest(new { Success = false, Message = "Unable to retrieve Archive notes." });
@@ -244,7 +244,11 @@ namespace FundooNotes.Controllers
                 return this.BadRequest(new { Success = false, Message = ex.Message, StackTrace = ex.StackTrace });
             }
         }
-
+        /// <summary>
+        /// delete Note
+        /// </summary>
+        /// <param name="notesId"></param>
+        /// <returns></returns>
         [HttpDelete]
         public ActionResult DeleteNote(int notesId)
         {
@@ -271,7 +275,12 @@ namespace FundooNotes.Controllers
             }
 
         }
-
+        /// <summary>
+        /// update note
+        /// </summary>
+        /// <param name="note"></param>
+        /// <param name="NotesId"></param>
+        /// <returns></returns>
         [HttpPut]
         [Route("updateNote")]
         public ActionResult UpdateNotes(UpdateNote note, int NotesId)
@@ -280,7 +289,7 @@ namespace FundooNotes.Controllers
             {
                 string email = GetIdFromTokenEmail();
                 this.fundooNoteBL.UpdateNotes(note, NotesId, email);
-                distributedCache.Remove(cacheKey);
+               // distributedCache.Remove(cacheKey);
                 return Ok(new { Success = true, Message = "Note Updated Successfully", data = note });
             }
             catch (Exception ex)
@@ -349,12 +358,12 @@ namespace FundooNotes.Controllers
         /// <returns>API response</returns>
         [HttpPost]
         [Route("CreateLabel")]
-        public IActionResult CreateLabel(string LabelName)
+        public IActionResult CreateLabel(LabelModel label)
         {
             try
             {
                 int userId = GetIdFromToken();
-                LabelResponse result = fundooNoteBL.CreateLabel(userId, LabelName);
+                LabelResponse result = fundooNoteBL.CreateLabel(userId, label);
                 bool success = false;
                 string message;
                 if (result == null)
@@ -381,11 +390,12 @@ namespace FundooNotes.Controllers
         /// <returns>API response</returns>
         [HttpDelete]
         [Route("RemoveLable")]
-        public IActionResult RemoveLable(int LabelId)
+        public IActionResult RemoveLable( int LabelId)
         {
             try
             {
-                var result = this.fundooNoteBL.DeleteLabel(LabelId);
+                int userId = GetIdFromToken();
+                var result = this.fundooNoteBL.DeleteLabel(userId, LabelId);
                 if (result == true)
                 {
                     return this.Ok(new { Status = true, Message = "Lable Deleted Successfully !", Data = LabelId });
@@ -399,5 +409,80 @@ namespace FundooNotes.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("GelLabel")]
+        public ActionResult GetAllLabel()
+        {
+            try
+            {
+                int userId = GetIdFromToken();
+                var getalllabel = fundooNoteBL.GetAllLabel(userId);
+                if (getalllabel != null)
+                {
+                 //   distributedCache.Remove(cacheKey);
+                    return this.Ok(new { Success = true, Message = "Label retrieved Successfully", Data = getalllabel });
+                }
+                return this.BadRequest(new { Success = false, Message = "Unable to retrieve Label." });
+            }
+            catch (Exception ex)
+            {
+
+                return this.BadRequest(new { Success = false, Message = ex.Message, StackTrace = ex.StackTrace });
+            }
+        }
+        [HttpDelete]
+        [Route("trash")]
+        public ActionResult DeleteTrashNotes()
+        {
+            try
+            {
+                int userId = GetIdFromToken();
+                var delete = fundooNoteBL.DeleteTrashNotes(userId);
+                if (delete == true)
+                {
+                   // distributedCache.Remove(cacheKey);
+                    return this.Ok(new { Success = true, Message = "All Notes detete Successfully", Data = delete });
+                }
+                return this.BadRequest(new { Success = false, Message = "Unable to Delete  notes." });
+            }
+            catch (Exception ex)
+            {
+
+                return this.BadRequest(new
+                {
+                    Success = false,
+                    Message = ex.Message
+                });
+
+            }
+
+        }
+        [HttpPost]
+        [Route("CreateCollaboration")]
+        public IActionResult CreateCollaboration(int userID, CollaborationModel collab)
+        {
+            try
+            {
+                int userId = GetIdFromToken();
+                CollaborationModel result = fundooNoteBL.CreateCollaboration(userId, collab);
+                bool success = false;
+                string message;
+                if (result == null)
+                {
+                    message = "Try again";
+                    return Ok(new { success, message });
+                }
+                else
+                {
+                    success = true;
+                    message = "Collaboration Created Successfully";
+                    return Ok(new { success, message, result });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+        }
     }
 }

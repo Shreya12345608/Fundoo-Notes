@@ -6,16 +6,13 @@ using System.Text;
 
 namespace CommanLayer
 {
-    public class LabelModel
+   public class CollaborationModel
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int LabelId { get; set; }
-        public string Label { get; set; }
-        public int NoteId { get; set; }
-
-        public  int UserId{ get; set; }
-
-  
+        public int CollaborationId { get; set; }
+        public string ReceiverMail { get; set; }
+        public int UserId { get; set; }
+        public int NotesId { get; set; }
     }
 }
